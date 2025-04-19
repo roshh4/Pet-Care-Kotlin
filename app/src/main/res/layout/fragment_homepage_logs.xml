@@ -8,6 +8,7 @@
     android:elevation="4dp">
 
     <TextView
+        android:id="@+id/petNameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="🐾 Buddy"
@@ -16,6 +17,7 @@
         android:textColor="#5A4231" />
 
     <TextView
+        android:id="@+id/petDetailsTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Golden Retriever • 3 years old"
@@ -46,18 +48,20 @@
             android:padding="8dp">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="Last Fed"
-                android:textColor="#7B5E57" />
+                android:textColor="#7B5E57"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
             <TextView
+                android:id="@+id/lastFedTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Today, 8:30 AM"
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/fedByTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="by Mike"
@@ -72,18 +76,20 @@
             android:padding="8dp">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="Food Remaining"
-                android:textColor="#7B5E57" />
+                android:textColor="#7B5E57"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
             <TextView
+                android:id="@+id/foodRemainingTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="1.2 kg"
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/estimatedDaysLeftTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="~7 days left"
@@ -100,18 +106,20 @@
         android:padding="8dp">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:text="Next Vet Appointment"
-            android:textColor="#7B5E57" />
+            android:textColor="#7B5E57"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <TextView
+            android:id="@+id/vetDateTimeTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="May 15, 2025 - 2:00 PM"
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/vetDetailsTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Dr. Martinez - Annual Checkup"
