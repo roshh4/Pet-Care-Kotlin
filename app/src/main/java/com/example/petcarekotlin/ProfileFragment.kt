@@ -18,12 +18,6 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Header + Footer
-        childFragmentManager.beginTransaction()
-            .replace(R.id.header_container, HeaderFragment())
-            .replace(R.id.footer_container, FooterFragment())
-            .commit()
-
         // Main Sections
         childFragmentManager.beginTransaction()
             .replace(R.id.pet_info_container, PetInfoFragment())
