@@ -1,0 +1,35 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <TextView
+        android:text="Pet Gallery"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content" />
+
+    <Button
+        android:text="Add Photo"
+        android:layout_gravity="end"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"/>
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="3"
+        android:layout_marginTop="8dp"
+        android:rowCount="2">
+
+        <!-- Repeat this ImageView as needed for 6 slots -->
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/ic_upload"
+            android:background="#fbe9e7"
+            android:layout_margin="4dp" />
+    </GridLayout>
+</LinearLayout>

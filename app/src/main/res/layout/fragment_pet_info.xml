@@ -1,0 +1,73 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@android:color/white">
+
+    <!-- Profile Image & Basic Info -->
+    <ImageView
+        android:id="@+id/profileImage"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:src="@drawable/ic_paw"
+        android:layout_gravity="center_horizontal"
+        android:backgroundTint="@color/lightBrown"
+        android:contentDescription="Pet Profile" />
+
+    <TextView
+        android:id="@+id/petNameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Buddy"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp" />
+
+    <TextView
+        android:id="@+id/petDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Golden Retriever • 3 years old"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#888888"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Pet Details -->
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Pet Name"
+        android:inputType="textPersonName"
+        android:autofillHints="name" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Species"
+        android:inputType="text"
+        android:autofillHints="username" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="breed"
+        android:inputType="text"
+        android:autofillHints="username" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="age"
+        android:inputType="number"
+        android:autofillHints="birthday" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="weight"
+        android:inputType="numberDecimal"
+        android:autofillHints="weight" />
+
+</LinearLayout>
