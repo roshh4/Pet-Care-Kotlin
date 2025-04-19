@@ -14,30 +14,40 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <!-- Profile Content -->
-        <LinearLayout
+        <!-- Pet Info Fragment -->
+        <FrameLayout
+            android:id="@+id/pet_info_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:layout_marginTop="16dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="User Profile"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:layout_gravity="center_horizontal"
-                android:paddingBottom="8dp" />
+        <!-- Weight Info Fragment -->
+        <FrameLayout
+            android:id="@+id/weight_info_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" />
 
-            <!-- Add more profile info views here -->
-        </LinearLayout>
+        <!-- Gallery Fragment -->
+        <FrameLayout
+            android:id="@+id/gallery_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" />
+
+        <!-- Vet Info Fragment -->
+        <FrameLayout
+            android:id="@+id/vet_info_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" />
 
         <!-- Footer Fragment -->
         <FrameLayout
             android:id="@+id/footer_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" />
 
     </LinearLayout>
 </ScrollView>

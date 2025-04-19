@@ -12,21 +12,33 @@ class ProfileFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the profile layout (your middle content)
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Load HeaderFragment into header container
+        // Header + Footer
         childFragmentManager.beginTransaction()
             .replace(R.id.header_container, HeaderFragment())
+            .replace(R.id.footer_container, FooterFragment())
             .commit()
 
-        // Load FooterFragment into footer container
+        // Main Sections
         childFragmentManager.beginTransaction()
-            .replace(R.id.footer_container, FooterFragment())
+            .replace(R.id.pet_info_container, PetInfoFragment())
+            .commit()
+
+        childFragmentManager.beginTransaction()
+            .replace(R.id.weight_info_container, WeightInfoFragment())
+            .commit()
+
+        childFragmentManager.beginTransaction()
+            .replace(R.id.gallery_container, GalleryFragment())
+            .commit()
+
+        childFragmentManager.beginTransaction()
+            .replace(R.id.vet_info_container, VetInfoFragment())
             .commit()
     }
 }
