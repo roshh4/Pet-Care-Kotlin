@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "144490824389",
+    "project_id": "petcarekotlin-8c8ba",
+    "storage_bucket": "petcarekotlin-8c8ba.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:144490824389:android:abe333a60e59161dff26ac",
+        "android_client_info": {
+          "package_name": "com.example.petcarekotlin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHzU3HMh8vB5vZGj21B-slwnRKjvXtqaY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

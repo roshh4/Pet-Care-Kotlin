@@ -18,7 +18,6 @@ class AppPageFragment : Fragment(), FooterFragment.OnFooterNavigationListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Load Home on startup
         loadFragment(HomePageFragment())
     }
 
@@ -26,7 +25,7 @@ class AppPageFragment : Fragment(), FooterFragment.OnFooterNavigationListener {
         val fragment = when (itemId) {
             R.id.nav_home -> HomePageFragment()
             R.id.nav_profile -> ProfileFragment()
-            R.id.nav_reminders -> RemindersFragment()
+            R.id.nav_foodlogs -> FoodLogsFragment()
             else -> null
         }
 
