@@ -1,4 +1,4 @@
-package com.example.petcarekotlin
+package com.example.petcarekotlin.foodlogs
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +8,7 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.petcarekotlin.R
 
 class FoodLogsFragment : Fragment() {
 
@@ -47,4 +48,4 @@ data class FoodLog(
     val time: String,
     val author: String,
     val amount: String
-)
+) 

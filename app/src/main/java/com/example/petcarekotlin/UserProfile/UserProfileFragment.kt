@@ -1,4 +1,4 @@
-package com.example.petcarekotlin.profile
+package com.example.petcarekotlin.UserProfile
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import com.example.petcarekotlin.AppPageFragment
-import com.example.petcarekotlin.LoginPageFragment
+import com.example.petcarekotlin.core.AppPageFragment
+import com.example.petcarekotlin.auth.LoginPageFragment
 import com.example.petcarekotlin.R
 
 class UserProfileFragment : Fragment() {

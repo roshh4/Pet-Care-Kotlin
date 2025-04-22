@@ -2,6 +2,7 @@ package com.example.petcarekotlin
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.example.petcarekotlin.auth.LoginPageFragment
 import com.google.firebase.FirebaseApp
 
 class MainActivity : AppCompatActivity() {

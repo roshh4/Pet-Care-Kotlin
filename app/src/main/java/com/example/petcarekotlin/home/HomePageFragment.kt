@@ -1,10 +1,13 @@
-package com.example.petcarekotlin
+package com.example.petcarekotlin.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.petcarekotlin.R
+import com.example.petcarekotlin.home.HomepageLogsFragment
+import com.example.petcarekotlin.home.ActivityFeedFragment
 
 class HomePageFragment : Fragment() {
 
@@ -24,4 +27,4 @@ class HomePageFragment : Fragment() {
             .replace(R.id.activity_container, ActivityFeedFragment())
             .commit()
     }
-}
+} 

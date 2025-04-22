@@ -1,4 +1,4 @@
-package com.example.petcarekotlin
+package com.example.petcarekotlin.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.example.petcarekotlin.R
 
 data class PetInfo(
     val name: String,
@@ -69,4 +70,4 @@ class HomepageLogsFragment : Fragment() {
         view.findViewById<TextView>(R.id.vetDateTimeTextView).text = pet.vetDateTime
         view.findViewById<TextView>(R.id.vetDetailsTextView).text = pet.vetDetails
     }
-}
+} 

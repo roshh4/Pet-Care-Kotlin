@@ -1,4 +1,4 @@
-package com.example.petcarekotlin
+package com.example.petcarekotlin.auth
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,6 +9,8 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.fragment.app.Fragment
 import android.widget.Toast
+import com.example.petcarekotlin.R
+import com.example.petcarekotlin.core.AppPageFragment
 import com.google.firebase.firestore.FirebaseFirestore
 
 class LoginPageFragment : Fragment() {
@@ -75,4 +77,4 @@ class LoginPageFragment : Fragment() {
 
         return view
     }
-}
+} 

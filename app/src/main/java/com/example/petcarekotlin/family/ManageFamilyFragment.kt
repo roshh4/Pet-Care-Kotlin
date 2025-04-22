@@ -10,7 +10,7 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.Toast
 import android.util.DisplayMetrics
-import com.example.petcarekotlin.AppPageFragment
+import com.example.petcarekotlin.core.AppPageFragment
 import com.example.petcarekotlin.R
 import com.google.android.material.bottomsheet.BottomSheetDialog
 

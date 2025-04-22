@@ -1,4 +1,4 @@
-package com.example.petcarekotlin
+package com.example.petcarekotlin.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.petcarekotlin.R
 
 class ActivityFeedFragment : Fragment() {
 
@@ -36,4 +37,4 @@ class ActivityFeedFragment : Fragment() {
 
         return view
     }
-}
+} 

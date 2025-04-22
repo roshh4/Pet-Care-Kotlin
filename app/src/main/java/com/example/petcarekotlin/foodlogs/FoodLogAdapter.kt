@@ -1,10 +1,11 @@
-package com.example.petcarekotlin
+package com.example.petcarekotlin.foodlogs
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.petcarekotlin.R
 
 class FoodLogAdapter(private val logs: List<FoodLog>) :
     RecyclerView.Adapter<FoodLogAdapter.FoodLogViewHolder>() {
@@ -29,4 +30,4 @@ class FoodLogAdapter(private val logs: List<FoodLog>) :
     }
 
     override fun getItemCount() = logs.size
-}
+} 

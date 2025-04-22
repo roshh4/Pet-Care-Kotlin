@@ -1,10 +1,11 @@
-package com.example.petcarekotlin
+package com.example.petcarekotlin.home
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.petcarekotlin.R
 
 class ActivityFeedAdapter(private val activityList: List<ActivityItem>) :
     RecyclerView.Adapter<ActivityFeedAdapter.ActivityViewHolder>() {
@@ -27,4 +28,4 @@ class ActivityFeedAdapter(private val activityList: List<ActivityItem>) :
     }
 
     override fun getItemCount(): Int = activityList.size
-}
+} 

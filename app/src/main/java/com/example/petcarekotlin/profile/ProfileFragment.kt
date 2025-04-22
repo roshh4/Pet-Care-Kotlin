@@ -1,10 +1,15 @@
-package com.example.petcarekotlin
+package com.example.petcarekotlin.profile
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.petcarekotlin.R
+import com.example.petcarekotlin.profile.PetInfoFragment
+import com.example.petcarekotlin.profile.WeightInfoFragment
+import com.example.petcarekotlin.profile.GalleryFragment
+import com.example.petcarekotlin.profile.VetInfoFragment
 
 class ProfileFragment : Fragment() {
 
@@ -35,4 +40,4 @@ class ProfileFragment : Fragment() {
             .replace(R.id.vet_info_container, VetInfoFragment())
             .commit()
     }
-}
+} 
