@@ -33,7 +33,7 @@ class PetInfoFragment : Fragment() {
     
     private val db = Firebase.firestore
     private var petId: String? = null
-    private var currentUserId: String? = null
+    private var userId: String? = null
     
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,9 +45,6 @@ class PetInfoFragment : Fragment() {
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
-        // Get current user id
-        currentUserId = FirebaseAuth.getInstance().currentUser?.uid
         
         // Initialize UI elements
         profileImage = view.findViewById(R.id.profileImage)
@@ -63,73 +60,53 @@ class PetInfoFragment : Fragment() {
         weightEditText = view.findViewById(R.id.weightEditText)
         saveButton = view.findViewById(R.id.saveButton)
         
-        // Get pet ID from arguments or fetch default pet
+        // Get current user ID (if available)
+        userId = FirebaseAuth.getInstance().currentUser?.uid ?: "user1" // Default for testing
+        
+        // Get pet ID from arguments or try to fetch the default pet
         arguments?.let {
             petId = it.getString(ARG_PET_ID)
-        }
-        
-        if (petId != null) {
-            loadPetById(petId!!)
-        } else {
-            fetchDefaultPet()
-        }
+            if (petId != null) {
+                loadPetData(petId!!)
+            } else {
+                // Try to fetch the default pet for this user
+                fetchDefaultPet()
+            }
+        } ?: fetchDefaultPet() // If no arguments, try to fetch default pet
         
         // Set up click listeners
         setupClickListeners()
     }
     
-    private fun setupClickListeners() {
-        // Edit photo button click
-        editPhotoButton.setOnClickListener {
-            Toast.makeText(context, "Photo selection will be implemented", Toast.LENGTH_SHORT).show()
-        }
-        
-        // Notification button click
-        notificationIcon.setOnClickListener {
-            Toast.makeText(context, "Notifications will be implemented", Toast.LENGTH_SHORT).show()
-        }
-        
-        // Save button click
-        saveButton.setOnClickListener {
-            savePetData()
-        }
-    }
-    
     private fun fetchDefaultPet() {
-        // If no specific pet ID provided, fetch the first pet associated with the current user
-        if (currentUserId == null) {
-            showError("User not authenticated")
-            return
-        }
-        
         // Show loading state
         setLoadingState(true)
         
+        // Query Firestore for the user's pets
         db.collection("pets")
-            .whereEqualTo("ownerId", currentUserId)
-            .limit(1)
+            .whereEqualTo("ownerId", userId)
+            .limit(1) // Just get the first pet for now
             .get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
-                    val petDocument = documents.documents[0]
-                    petId = petDocument.id
-                    
+                    // Get the first pet document
+                    val document = documents.documents[0]
+                    petId = document.id
                     // Load the pet data
-                    updateUIWithPetData(petDocument.data)
+                    loadPetDataFromDocument(document)
                 } else {
                     // No pets found, show empty state
                     showEmptyState()
                 }
-                
                 setLoadingState(false)
             }
             .addOnFailureListener { e ->
-                showError("Error fetching pets: ${e.message}")
+                Toast.makeText(context, "Error fetching pets: ${e.message}", Toast.LENGTH_SHORT).show()
                 setLoadingState(false)
             }
     }
     
-    private fun loadPetById(petId: String) {
+    private fun loadPetData(petId: String) {
         // Show loading state
         setLoadingState(true)
         
@@ -137,40 +114,37 @@ class PetInfoFragment : Fragment() {
             .get()
             .addOnSuccessListener { document ->
                 if (document != null && document.exists()) {
-                    // Update UI with pet data
-                    updateUIWithPetData(document.data)
+                    loadPetDataFromDocument(document)
                 } else {
-                    showError("Pet not found")
+                    showEmptyState()
+                    Toast.makeText(context, "Pet not found", Toast.LENGTH_SHORT).show()
                 }
-                
                 setLoadingState(false)
             }
             .addOnFailureListener { e ->
-                showError("Error loading pet data: ${e.message}")
+                Toast.makeText(context, "Error loading pet data: ${e.message}", Toast.LENGTH_SHORT).show()
                 setLoadingState(false)
             }
     }
     
-    private fun updateUIWithPetData(petData: Map<String, Any>?) {
-        if (petData == null) return
-        
+    private fun loadPetDataFromDocument(document: com.google.firebase.firestore.DocumentSnapshot) {
         try {
-            // Extract pet data with safe casting
-            val name = petData["name"] as? String ?: ""
-            val species = petData["species"] as? String ?: ""
-            val breed = petData["breed"] as? String ?: ""
+            // Extract pet data fields with proper type conversion
+            val name = document.getString("name") ?: ""
+            val species = document.getString("species") ?: ""
+            val breed = document.getString("breed") ?: ""
             
-            // Handle numeric fields which could be different types
-            val age = when (val ageValue = petData["age"]) {
+            // Handle numeric values properly
+            val age = when (val ageValue = document.get("age")) {
                 is Long -> ageValue.toString()
-                is Int -> ageValue.toString()
                 is String -> ageValue
+                is Double -> ageValue.toInt().toString()
                 else -> ""
             }
             
-            val weight = when (val weightValue = petData["weight"]) {
+            val weight = when (val weightValue = document.get("weight")) {
                 is Double -> weightValue.toString()
-                is Float -> weightValue.toString()
+                is Long -> weightValue.toString()
                 is String -> weightValue
                 else -> ""
             }
@@ -193,7 +167,47 @@ class PetInfoFragment : Fragment() {
                 // Fallback handling if resource not found
             }
         } catch (e: Exception) {
-            showError("Error parsing pet data: ${e.message}")
+            Toast.makeText(context, "Error parsing pet data: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+    
+    private fun showEmptyState() {
+        // Clear all fields and show default values
+        petNameHeader.text = "No Pet Found"
+        petDetailsHeader.text = "Add your pet details below"
+        
+        petNameEditText.setText("")
+        speciesEditText.setText("")
+        breedEditText.setText("")
+        ageEditText.setText("")
+        weightEditText.setText("")
+    }
+    
+    private fun setLoadingState(isLoading: Boolean) {
+        // Show/hide loading indicator and disable/enable form fields
+        if (isLoading) {
+            saveButton.isEnabled = false
+            saveButton.text = "Loading..."
+        } else {
+            saveButton.isEnabled = true
+            saveButton.text = "Save Changes"
+        }
+    }
+    
+    private fun setupClickListeners() {
+        // Edit photo button click
+        editPhotoButton.setOnClickListener {
+            Toast.makeText(context, "Photo selection will be implemented", Toast.LENGTH_SHORT).show()
+        }
+        
+        // Notification button click
+        notificationIcon.setOnClickListener {
+            Toast.makeText(context, "Notifications will be implemented", Toast.LENGTH_SHORT).show()
+        }
+        
+        // Save button click
+        saveButton.setOnClickListener {
+            savePetData()
         }
     }
     
@@ -202,8 +216,8 @@ class PetInfoFragment : Fragment() {
         val name = petNameEditText.text.toString().trim()
         val species = speciesEditText.text.toString().trim()
         val breed = breedEditText.text.toString().trim()
-        val ageText = ageEditText.text.toString().trim()
-        val weightText = weightEditText.text.toString().trim()
+        val age = ageEditText.text.toString().trim()
+        val weight = weightEditText.text.toString().trim()
         
         // Validate required fields
         var hasError = false
@@ -213,43 +227,10 @@ class PetInfoFragment : Fragment() {
             hasError = true
         }
         
-        if (species.isEmpty()) {
-            speciesEditText.error = "Species is required"
-            hasError = true
-        }
-        
-        if (breed.isEmpty()) {
-            breedEditText.error = "Breed is required"
-            hasError = true
-        }
-        
-        if (ageText.isEmpty()) {
-            ageEditText.error = "Age is required"
-            hasError = true
-        }
-        
-        if (weightText.isEmpty()) {
-            weightEditText.error = "Weight is required"
-            hasError = true
-        }
-        
         if (hasError) return
         
-        // Convert numeric values properly
-        val age = ageText.toIntOrNull()
-        if (age == null) {
-            ageEditText.error = "Please enter a valid number"
-            return
-        }
-        
-        val weight = weightText.toDoubleOrNull()
-        if (weight == null) {
-            weightEditText.error = "Please enter a valid number"
-            return
-        }
-        
         // Disable save button to prevent duplicate submissions
-        saveButton.isEnabled = false
+        setLoadingState(true)
         
         // Create pet data map
         val petData = hashMapOf(
@@ -258,14 +239,9 @@ class PetInfoFragment : Fragment() {
             "breed" to breed,
             "age" to age,
             "weight" to weight,
-            "lastUpdated" to System.currentTimeMillis()
+            "lastUpdated" to System.currentTimeMillis(),
+            "ownerId" to userId
         )
-        
-        // If creating a new pet, add the owner ID
-        if (petId == null && currentUserId != null) {
-            petData["ownerId"] = currentUserId!!
-            petData["createdAt"] = System.currentTimeMillis()
-        }
         
         // Update or create pet document
         if (petId != null) {
@@ -279,11 +255,11 @@ class PetInfoFragment : Fragment() {
                     petNameHeader.text = name
                     petDetailsHeader.text = "$breed • $age years old"
                     
-                    saveButton.isEnabled = true
+                    setLoadingState(false)
                 }
                 .addOnFailureListener { e ->
-                    showError("Error updating pet: ${e.message}")
-                    saveButton.isEnabled = true
+                    Toast.makeText(context, "Error updating pet: ${e.message}", Toast.LENGTH_SHORT).show()
+                    setLoadingState(false)
                 }
         } else {
             // Create new pet
@@ -297,38 +273,13 @@ class PetInfoFragment : Fragment() {
                     petNameHeader.text = name
                     petDetailsHeader.text = "$breed • $age years old"
                     
-                    saveButton.isEnabled = true
+                    setLoadingState(false)
                 }
                 .addOnFailureListener { e ->
-                    showError("Error adding pet: ${e.message}")
-                    saveButton.isEnabled = true
+                    Toast.makeText(context, "Error adding pet: ${e.message}", Toast.LENGTH_SHORT).show()
+                    setLoadingState(false)
                 }
         }
-    }
-    
-    private fun setLoadingState(isLoading: Boolean) {
-        // TODO: Add progress indicator if needed
-        if (isLoading) {
-            saveButton.isEnabled = false
-        } else {
-            saveButton.isEnabled = true
-        }
-    }
-    
-    private fun showEmptyState() {
-        // Reset fields to show empty state
-        petNameHeader.text = "New Pet"
-        petDetailsHeader.text = "Add your pet details"
-        
-        petNameEditText.setText("")
-        speciesEditText.setText("")
-        breedEditText.setText("")
-        ageEditText.setText("")
-        weightEditText.setText("")
-    }
-    
-    private fun showError(message: String) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
     
     companion object {
