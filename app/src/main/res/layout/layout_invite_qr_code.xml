@@ -1,0 +1,185 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF">
+
+    <!-- Handle bar for bottom sheet -->
+    <View
+        android:layout_width="60dp"
+        android:layout_height="4dp"
+        android:background="#CCCCCC"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Title -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Invite New Member"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#8B4513"
+        android:gravity="center"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Instructions -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Share this QR code with family members to give them access to your pets"
+        android:textSize="14sp"
+        android:textColor="#777777"
+        android:gravity="center"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="32dp" />
+    
+    <!-- QR Code (dummy) - simplified to a TextView for now -->
+    <FrameLayout
+        android:layout_width="240dp"
+        android:layout_height="240dp"
+        android:layout_gravity="center_horizontal"
+        android:background="#F5F5F5"
+        android:layout_marginBottom="32dp">
+        
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="QR Code Placeholder"
+            android:gravity="center"
+            android:textStyle="bold" />
+    </FrameLayout>
+    
+    <!-- Expiration Notice -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="This code will expire in 24 hours"
+        android:textSize="14sp"
+        android:textColor="#FF5722"
+        android:gravity="center"
+        android:layout_marginBottom="24dp" />
+    
+    <!-- Share Options -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="16dp">
+        
+        <!-- Email Option -->
+        <LinearLayout
+            android:id="@+id/share_email"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+            
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_profile"
+                android:background="#EEE"
+                android:padding="12dp"
+                android:contentDescription="Email" />
+                
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Email"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+        
+        <!-- WhatsApp Option -->
+        <LinearLayout
+            android:id="@+id/share_whatsapp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+            
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_profile"
+                android:background="#EEE"
+                android:padding="12dp"
+                android:contentDescription="WhatsApp" />
+                
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="WhatsApp"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+        
+        <!-- SMS Option -->
+        <LinearLayout
+            android:id="@+id/share_sms"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+            
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_profile"
+                android:background="#EEE"
+                android:padding="12dp"
+                android:contentDescription="SMS" />
+                
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SMS"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+        
+        <!-- Copy Option -->
+        <LinearLayout
+            android:id="@+id/copy_link"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+            
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_profile"
+                android:background="#EEE"
+                android:padding="12dp"
+                android:contentDescription="Copy Link" />
+                
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Copy Link"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+    </LinearLayout>
+    
+    <!-- Close Button -->
+    <Button
+        android:id="@+id/close_invite"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Close"
+        android:textColor="#FFFFFF"
+        android:background="#B58863"
+        android:layout_margin="16dp"
+        android:padding="12dp" />
+</LinearLayout> 

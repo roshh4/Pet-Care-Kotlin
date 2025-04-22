@@ -1,0 +1,258 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF">
+    
+    <!-- Title bar with back button -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:background="#F8F8F8">
+        
+        <ImageView
+            android:id="@+id/back_button"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_arrow_back"
+            android:layout_alignParentStart="true"
+            android:contentDescription="Back" />
+            
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Manage Family"
+            android:textColor="#8B4513"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_centerHorizontal="true" />
+            
+        <ImageView
+            android:id="@+id/close_button"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_close"
+            android:contentDescription="Close" />
+    </RelativeLayout>
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Family members with access to your pets"
+        android:textColor="#777777"
+        android:textSize="14sp"
+        android:padding="16dp" />
+    
+    <!-- Family member list -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            
+            <!-- Owner -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FFF3E0"
+                android:padding="16dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginHorizontal="16dp">
+                
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_profile"
+                    android:background="#B58863"
+                    android:padding="8dp"
+                    android:contentDescription="Owner" />
+                    
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="16dp">
+                    
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sarah Johnson"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                        
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="sarah@example.com"
+                        android:textColor="#777777"
+                        android:textSize="14sp" />
+                </LinearLayout>
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Owner"
+                    android:textColor="#8B4513"
+                    android:background="@drawable/owner_badge_background"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="4dp"
+                    android:textSize="12sp"
+                    android:layout_gravity="center_vertical" />
+            </LinearLayout>
+            
+            <!-- Member 1 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FFF3E0"
+                android:padding="16dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginHorizontal="16dp">
+                
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_profile"
+                    android:background="#B58863"
+                    android:padding="8dp"
+                    android:contentDescription="Member" />
+                    
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="16dp">
+                    
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Mike Johnson"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                        
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="mike@example.com"
+                        android:textColor="#777777"
+                        android:textSize="14sp" />
+                </LinearLayout>
+                
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center_vertical">
+                    
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Member"
+                        android:textColor="#8B4513"
+                        android:background="@drawable/member_badge_background"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="4dp"
+                        android:textSize="12sp"
+                        android:layout_marginEnd="8dp" />
+                    
+                    <ImageView
+                        android:id="@+id/member1_options"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_more_vert"
+                        android:contentDescription="Options" />
+                </LinearLayout>
+            </LinearLayout>
+            
+            <!-- Member 2 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FFF3E0"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginHorizontal="16dp">
+                
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_profile"
+                    android:background="#B58863"
+                    android:padding="8dp"
+                    android:contentDescription="Member" />
+                    
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="16dp">
+                    
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Emma Davis"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                        
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="emma@example.com"
+                        android:textColor="#777777"
+                        android:textSize="14sp" />
+                </LinearLayout>
+                
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center_vertical">
+                    
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Member"
+                        android:textColor="#8B4513"
+                        android:background="@drawable/member_badge_background"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="4dp"
+                        android:textSize="12sp"
+                        android:layout_marginEnd="8dp" />
+                    
+                    <ImageView
+                        android:id="@+id/member2_options"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_more_vert"
+                        android:contentDescription="Options" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+    
+    <!-- Invite New Member Button -->
+    <Button
+        android:id="@+id/invite_new_member_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Invite New Member"
+        android:drawableStart="@drawable/ic_add_person"
+        android:drawablePadding="8dp"
+        android:textColor="#FFFFFF"
+        android:background="#B58863"
+        android:layout_margin="16dp"
+        android:padding="12dp" />
+        
+</LinearLayout> 
