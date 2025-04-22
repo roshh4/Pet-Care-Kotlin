@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.drawerlayout.widget.DrawerLayout
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -34,7 +36,23 @@ class HeaderFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_header, container, false)
+        val view = inflater.inflate(R.layout.fragment_header, container, false)
+        
+        // Set click listener for profile icon
+        val profileIcon = view.findViewById<ImageView>(R.id.profile_icon)
+        profileIcon.setOnClickListener {
+            // Find the parent activity and open the drawer
+            val activity = activity
+            if (activity != null) {
+                val parentFragment = parentFragment
+                if (parentFragment is AppPageFragment) {
+                    // Open the drawer in the parent AppPageFragment
+                    parentFragment.openDrawer()
+                }
+            }
+        }
+        
+        return view
     }
 
     companion object {

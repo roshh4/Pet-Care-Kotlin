@@ -26,6 +26,7 @@
 
     <!-- Profile Icon -->
     <ImageView
+        android:id="@+id/profile_icon"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:contentDescription="Profile Icon"

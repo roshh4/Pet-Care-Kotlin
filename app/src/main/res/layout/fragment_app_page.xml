@@ -1,26 +1,42 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Header (if using HeaderFragment similarly) -->
-    <fragment
-        android:id="@+id/header_fragment"
-        android:name="com.example.petcarekotlin.HeaderFragment"
+    <!-- Main Content -->
+    <LinearLayout 
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent">
 
-    <!-- Fragment Container -->
-    <FrameLayout
-        android:id="@+id/fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+        <!-- Header (if using HeaderFragment similarly) -->
+        <fragment
+            android:id="@+id/header_fragment"
+            android:name="com.example.petcarekotlin.HeaderFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-    <!-- Footer Fragment (DYNAMIC!) -->
-    <fragment
-        android:id="@+id/footer_fragment"
-        android:name="com.example.petcarekotlin.FooterFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-</LinearLayout>
+        <!-- Fragment Container -->
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- Footer Fragment (DYNAMIC!) -->
+        <fragment
+            android:id="@+id/footer_fragment"
+            android:name="com.example.petcarekotlin.FooterFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <!-- Sidebar (Right Drawer) - Set to 50% of screen width -->
+    <include
+        layout="@layout/sidebar_layout"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="end" />
+
+</androidx.drawerlayout.widget.DrawerLayout>

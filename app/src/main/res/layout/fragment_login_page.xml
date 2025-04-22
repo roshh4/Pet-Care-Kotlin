@@ -5,12 +5,6 @@
     android:gravity="top|center_horizontal"
     android:fitsSystemWindows="true">
 
-    <!-- Header -->
-    <include
-        layout="@layout/fragment_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
     <!-- Username -->
     <EditText
         android:id="@+id/username"
