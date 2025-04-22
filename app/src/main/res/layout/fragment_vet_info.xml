@@ -1,26 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:padding="16dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="#FFFAFAFA">
+
+    <!-- Veterinarian Name Section -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Veterinarian"
+        android:textColor="#333333"
+        android:textSize="16sp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="4dp"/>
 
     <EditText
-        android:hint="Veterinarian"
+        android:id="@+id/vetNameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter veterinarian name"
         android:text="Dr. Martinez"
+        android:background="@drawable/edit_text_background"
+        android:inputType="textPersonName"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Vet Contact Section -->
+    <TextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"/>
+        android:text="Vet Contact"
+        android:textColor="#333333"
+        android:textSize="16sp"
+        android:layout_marginBottom="4dp"/>
 
     <EditText
-        android:hint="Vet Contact"
-        android:text="(555) 123-4567"
+        android:id="@+id/vetContactEditText"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"/>
+        android:hint="Enter phone number"
+        android:text="(555) 123-4567"
+        android:background="@drawable/edit_text_background"
+        android:inputType="phone"
+        android:padding="12dp"
+        android:layout_marginBottom="24dp"/>
 
+    <!-- Save Button -->
     <Button
+        android:id="@+id/saveButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="Save Changes"
         android:layout_marginTop="16dp"
-        android:backgroundTint="#A97453"
+        android:background="@drawable/button_primary"
         android:textColor="#FFFFFF"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"/>
+        android:padding="12dp"/>
 </LinearLayout>
