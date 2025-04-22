@@ -24,14 +24,6 @@
         android:textSize="16sp"
         android:textColor="#8D6E63" />
 
-    <Button
-        android:id="@+id/switchPetButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Switch Pet"
-        android:layout_gravity="end"
-        android:layout_marginTop="8dp" />
-
     <!-- Last Fed & Food Remaining -->
     <LinearLayout
         android:layout_width="match_parent"
@@ -41,6 +33,7 @@
         android:weightSum="2">
 
         <LinearLayout
+            android:id="@+id/lastFedLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -69,6 +62,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/foodRemainingLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -99,6 +93,7 @@
 
     <!-- Vet Appointment -->
     <LinearLayout
+        android:id="@+id/vetAppointmentLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"

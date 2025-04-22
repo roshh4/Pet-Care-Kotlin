@@ -124,6 +124,18 @@
                     android:layout_marginStart="16dp" />
             </LinearLayout>
             
+            <!-- Add Pet Button -->
+            <Button
+                android:id="@+id/add_pet_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Add Pet"
+                android:textColor="#FFFFFF"
+                android:background="#78AB46"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:padding="8dp" />
+            
             <!-- Pet Family Section -->
             <TextView
                 android:layout_width="match_parent"

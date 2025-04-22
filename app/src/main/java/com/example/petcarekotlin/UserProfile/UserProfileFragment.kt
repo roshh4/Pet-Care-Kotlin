@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import com.example.petcarekotlin.core.AppPageFragment
 import com.example.petcarekotlin.auth.LoginPageFragment
 import com.example.petcarekotlin.R
@@ -46,6 +47,12 @@ class UserProfileFragment : Fragment() {
         view.findViewById<View>(R.id.pet_rex)?.setOnClickListener {
             // Handle pet click
             closeDrawer()
+        }
+        
+        // Add Pet button
+        view.findViewById<Button>(R.id.add_pet_button)?.setOnClickListener {
+            // Show add pet dialog or navigate to add pet screen
+            Toast.makeText(context, "Add Pet functionality coming soon!", Toast.LENGTH_SHORT).show()
         }
         
         // Pet Family section

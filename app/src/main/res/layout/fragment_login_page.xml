@@ -3,7 +3,19 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="top|center_horizontal"
+    android:padding="24dp"
     android:fitsSystemWindows="true">
+
+    <!-- App Title -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pet Care"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:textColor="#8B4513"
+        android:layout_marginTop="48dp"
+        android:layout_marginBottom="48dp"/>
 
     <!-- Username -->
     <EditText
@@ -12,7 +24,9 @@
         android:layout_height="wrap_content"
         android:hint="Username"
         android:inputType="textPersonName"
-        android:layout_marginTop="48dp"/>
+        android:padding="12dp"
+        android:background="@drawable/edit_text_background"
+        android:layout_marginBottom="16dp"/>
 
     <!-- Password -->
     <EditText
@@ -21,7 +35,9 @@
         android:layout_height="wrap_content"
         android:hint="Password"
         android:inputType="textPassword"
-        android:layout_marginTop="16dp"/>
+        android:padding="12dp"
+        android:background="@drawable/edit_text_background"
+        android:layout_marginBottom="32dp"/>
 
     <!-- Login Button -->
     <Button
@@ -29,5 +45,30 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Login"
-        android:layout_marginTop="32dp"/>
+        android:textColor="#FFFFFF"
+        android:background="#78AB46"
+        android:padding="12dp"/>
+        
+    <!-- Sign Up Text -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="24dp">
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New to this app? "
+            android:textSize="16sp"/>
+            
+        <TextView
+            android:id="@+id/signupText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sign Up"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#78AB46"/>
+    </LinearLayout>
 </LinearLayout>
