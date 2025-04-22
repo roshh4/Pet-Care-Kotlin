@@ -12,6 +12,7 @@ import android.widget.Toast
 import com.example.petcarekotlin.core.AppPageFragment
 import com.example.petcarekotlin.auth.LoginPageFragment
 import com.example.petcarekotlin.R
+import com.example.petcarekotlin.home.HomepageLogsFragment
 
 class UserProfileFragment : Fragment() {
 
@@ -51,8 +52,8 @@ class UserProfileFragment : Fragment() {
         
         // Add Pet button
         view.findViewById<Button>(R.id.add_pet_button)?.setOnClickListener {
-            // Show add pet dialog or navigate to add pet screen
-            Toast.makeText(context, "Add Pet functionality coming soon!", Toast.LENGTH_SHORT).show()
+            // Show add pet dialog
+            showAddPetDialog()
         }
         
         // Pet Family section
@@ -87,6 +88,24 @@ class UserProfileFragment : Fragment() {
                 .replace(R.id.fragment_container, LoginPageFragment())
                 .commit()
             closeDrawer()
+        }
+    }
+    
+    private fun showAddPetDialog() {
+        // Find the HomepageLogsFragment and call its showAddPetDialog method
+        val appPageFragment = parentFragment as? AppPageFragment
+        appPageFragment?.let { appPage ->
+            // First close the drawer
+            closeDrawer()
+            
+            // Try to find the HomepageLogsFragment
+            val homepageLogsFragment = appPage.childFragmentManager
+                .findFragmentByTag("home")?.childFragmentManager
+                ?.findFragmentById(R.id.logs_container) as? HomepageLogsFragment
+                
+            homepageLogsFragment?.showAddPetDialog() ?: run {
+                Toast.makeText(context, "Could not access pet management. Please try again.", Toast.LENGTH_SHORT).show()
+            }
         }
     }
     
