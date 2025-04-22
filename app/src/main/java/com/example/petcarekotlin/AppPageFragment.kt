@@ -14,6 +14,7 @@ import android.view.WindowInsets
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import android.widget.Button
 import android.widget.FrameLayout
+import com.example.petcarekotlin.family.ManageFamilyFragment
 
 class AppPageFragment : Fragment(), FooterFragment.OnFooterNavigationListener {
     
@@ -119,8 +120,12 @@ class AppPageFragment : Fragment(), FooterFragment.OnFooterNavigationListener {
         
         // Pet Family section
         view.findViewById<View>(R.id.manage_family)?.setOnClickListener {
-            // Show the manage family screen
-            showManageFamilyScreen()
+            // Navigate to ManageFamilyFragment
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, ManageFamilyFragment())
+                .addToBackStack(null)
+                .commit()
+            drawerLayout.closeDrawers()
         }
         
         view.findViewById<View>(R.id.generate_invite)?.setOnClickListener {
