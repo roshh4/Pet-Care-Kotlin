@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.Toast
 import android.util.DisplayMetrics
+import com.example.petcarekotlin.AppPageFragment
 import com.example.petcarekotlin.R
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
@@ -25,12 +26,14 @@ class ManageFamilyFragment : Fragment() {
         
         // Set up back button
         view.findViewById<ImageView>(R.id.back_button)?.setOnClickListener {
-            parentFragmentManager.popBackStack()
+            // Return to UserProfileFragment in sidebar
+            (parentFragment as? AppPageFragment)?.showUserProfileInSidebar()
         }
         
         // Set up close button
         view.findViewById<ImageView>(R.id.close_button)?.setOnClickListener {
-            parentFragmentManager.popBackStack()
+            // Close the drawer
+            (parentFragment as? AppPageFragment)?.closeDrawer()
         }
         
         // Set up invite new member button
@@ -42,7 +45,33 @@ class ManageFamilyFragment : Fragment() {
         setupMemberOptions(view.findViewById(R.id.member1_options))
         setupMemberOptions(view.findViewById(R.id.member2_options))
         
+        // Set width to 4/5 of the screen
+        setLayoutWidth(view)
+        
         return view
+    }
+    
+    private fun setLayoutWidth(view: View) {
+        // Get screen width
+        val displayMetrics = DisplayMetrics()
+        val windowManager = requireActivity().windowManager
+        
+        view.post {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+                val bounds = windowManager.currentWindowMetrics.bounds
+                val screenWidth = bounds.width()
+                val params = view.layoutParams
+                params.width = (screenWidth * 4) / 5
+                view.layoutParams = params
+            } else {
+                @Suppress("DEPRECATION")
+                windowManager.defaultDisplay.getMetrics(displayMetrics)
+                val screenWidth = displayMetrics.widthPixels
+                val params = view.layoutParams
+                params.width = (screenWidth * 4) / 5
+                view.layoutParams = params
+            }
+        }
     }
     
     private fun setupMemberOptions(optionsButton: ImageView?) {

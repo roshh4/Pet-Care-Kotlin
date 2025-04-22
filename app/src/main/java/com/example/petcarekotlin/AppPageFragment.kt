@@ -15,13 +15,13 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import android.widget.Button
 import android.widget.FrameLayout
 import com.example.petcarekotlin.family.ManageFamilyFragment
+import com.example.petcarekotlin.profile.UserProfileFragment
 
 class AppPageFragment : Fragment(), FooterFragment.OnFooterNavigationListener {
     
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var sidebarView: View
-    private lateinit var manageFamilyView: View
-    private var isShowingManageFamily = false
+    private lateinit var sidebarContainer: FrameLayout
     
     // Bottom sheet dialog for QR code
     private var inviteQrDialog: BottomSheetDialog? = null
@@ -34,9 +34,6 @@ class AppPageFragment : Fragment(), FooterFragment.OnFooterNavigationListener {
         
         // Initialize the drawer layout
         drawerLayout = view.findViewById(R.id.drawer_layout)
-        
-        // Inflate manage family view for later use
-        manageFamilyView = inflater.inflate(R.layout.layout_manage_family, null)
         
         return view
     }
@@ -54,24 +51,25 @@ class AppPageFragment : Fragment(), FooterFragment.OnFooterNavigationListener {
             }
         }
         
-        // Set the sidebar width to half of the screen width
-        setSidebarHalfWidth()
+        // Set the sidebar width to 4/5 of the screen width
+        setSidebarWidth()
         
-        // Set up sidebar menu items
-        setupSidebarMenu(sidebarView)
-        
-        // Set up manage family view
-        setupManageFamilyView()
+        // Find or create the sidebar container
+        sidebarContainer = sidebarView.findViewById(R.id.sidebar_container)
         
         // Close button click handler
         sidebarView.findViewById<ImageView>(R.id.close_button)?.setOnClickListener {
             drawerLayout.closeDrawer(androidx.core.view.GravityCompat.END)
         }
         
+        // Load UserProfileFragment in the sidebar container
+        loadSidebarFragment(UserProfileFragment())
+        
+        // Load main content
         loadFragment(HomePageFragment())
     }
     
-    private fun setSidebarHalfWidth() {
+    private fun setSidebarWidth() {
         // Get screen width
         val displayMetrics = DisplayMetrics()
         val windowManager = requireActivity().windowManager
@@ -80,140 +78,46 @@ class AppPageFragment : Fragment(), FooterFragment.OnFooterNavigationListener {
             val bounds = windowManager.currentWindowMetrics.bounds
             val screenWidth = bounds.width()
             val params = sidebarView.layoutParams
-            params.width = screenWidth / 2
+            params.width = (screenWidth * 4) / 5
             sidebarView.layoutParams = params
         } else {
             @Suppress("DEPRECATION")
             windowManager.defaultDisplay.getMetrics(displayMetrics)
             val screenWidth = displayMetrics.widthPixels
             val params = sidebarView.layoutParams
-            params.width = screenWidth / 2
+            params.width = (screenWidth * 4) / 5
             sidebarView.layoutParams = params
         }
     }
     
     // Function to open the drawer from HeaderFragment
     fun openDrawer() {
-        // Make sure we show the main sidebar, not manage family
-        if (isShowingManageFamily) {
-            showMainSidebar()
-        }
         drawerLayout.openDrawer(androidx.core.view.GravityCompat.END)
     }
     
-    private fun setupSidebarMenu(view: View) {
-        // Your Pets section
-        view.findViewById<View>(R.id.pet_buddy)?.setOnClickListener {
-            // Handle pet click
-            drawerLayout.closeDrawers()
-        }
-        
-        view.findViewById<View>(R.id.pet_whiskers)?.setOnClickListener {
-            // Handle pet click
-            drawerLayout.closeDrawers()
-        }
-        
-        view.findViewById<View>(R.id.pet_rex)?.setOnClickListener {
-            // Handle pet click
-            drawerLayout.closeDrawers()
-        }
-        
-        // Pet Family section
-        view.findViewById<View>(R.id.manage_family)?.setOnClickListener {
-            // Navigate to ManageFamilyFragment
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, ManageFamilyFragment())
-                .addToBackStack(null)
-                .commit()
-            drawerLayout.closeDrawers()
-        }
-        
-        view.findViewById<View>(R.id.generate_invite)?.setOnClickListener {
-            // Show invite QR code
-            showInviteQrCodeSheet()
-        }
-        
-        view.findViewById<View>(R.id.leave_family)?.setOnClickListener {
-            // Handle leave family
-            drawerLayout.closeDrawers()
-        }
-        
-        // Theme setting
-        view.findViewById<View>(R.id.theme_setting)?.setOnClickListener {
-            // Handle theme setting
-            drawerLayout.closeDrawers()
-        }
-        
-        // Logout button
-        view.findViewById<View>(R.id.logout_button)?.setOnClickListener {
-            // Navigate back to login
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, LoginPageFragment())
-                .commit()
-            drawerLayout.closeDrawers()
-        }
+    // Function to close the drawer
+    fun closeDrawer() {
+        drawerLayout.closeDrawer(androidx.core.view.GravityCompat.END)
     }
     
-    private fun setupManageFamilyView() {
-        // Back button click handler
-        manageFamilyView.findViewById<ImageView>(R.id.back_button)?.setOnClickListener {
-            showMainSidebar()
-        }
-        
-        // Close button click handler
-        manageFamilyView.findViewById<ImageView>(R.id.close_button)?.setOnClickListener {
-            drawerLayout.closeDrawer(androidx.core.view.GravityCompat.END)
-        }
-        
-        // Invite new member button
-        manageFamilyView.findViewById<Button>(R.id.invite_new_member_button)?.setOnClickListener {
-            showInviteQrCodeSheet()
-        }
+    // Replace sidebar content with ManageFamilyFragment
+    fun showManageFamilyInSidebar() {
+        loadSidebarFragment(ManageFamilyFragment())
     }
     
-    fun showManageFamilyScreen() {
-        // Get parent view group of the drawer
-        val parent = drawerLayout
-        
-        // Remove the current sidebar view
-        parent.removeView(sidebarView)
-        
-        // Apply the drawer parameters to manage family view
-        manageFamilyView.layoutParams = DrawerLayout.LayoutParams(
-            sidebarView.layoutParams.width,
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            androidx.core.view.GravityCompat.END
-        )
-        
-        // Add manage family view to drawer
-        parent.addView(manageFamilyView)
-        
-        // Update the sidebar reference
-        sidebarView = manageFamilyView
-        isShowingManageFamily = true
+    // Replace sidebar content with UserProfileFragment
+    fun showUserProfileInSidebar() {
+        loadSidebarFragment(UserProfileFragment())
     }
     
-    private fun showMainSidebar() {
-        if (!isShowingManageFamily) return
-        
-        // Get original sidebar from its parent
-        val originalSidebar = drawerLayout.getChildAt(0)
-        
-        // Get parent view group of the drawer
-        val parent = drawerLayout
-        
-        // Remove the manage family view
-        parent.removeView(manageFamilyView)
-        
-        // Add original sidebar back
-        parent.addView(originalSidebar)
-        
-        // Update sidebar reference
-        sidebarView = originalSidebar
-        isShowingManageFamily = false
+    // Load fragment in sidebar container
+    private fun loadSidebarFragment(fragment: Fragment) {
+        childFragmentManager.beginTransaction()
+            .replace(R.id.sidebar_container, fragment)
+            .commit()
     }
     
-    private fun showInviteQrCodeSheet() {
+    fun showInviteQrCodeSheet() {
         // Create bottom sheet dialog
         inviteQrDialog = BottomSheetDialog(requireContext())
         
