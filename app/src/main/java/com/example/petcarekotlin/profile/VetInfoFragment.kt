@@ -137,9 +137,7 @@ class VetInfoFragment : Fragment() {
                             
                             // Update UI with the extracted data
                             updateUIWithVetInfo(vetName, vetContact)
-                            
-                            // Show success message
-                            Toast.makeText(context, "Vet info loaded successfully", Toast.LENGTH_SHORT).show()
+
                         } else {
                             // No vetInfo map found - show empty fields
                             println("No vetInfo map found in document")
@@ -233,8 +231,6 @@ class VetInfoFragment : Fragment() {
                         .addOnFailureListener { e ->
                             println("Error updating vet info: ${e.message}")
                             e.printStackTrace()
-                            
-                            // Try to set the data instead if update fails
                             trySetVetInfo(vetName, vetContact)
                         }
                 } else {

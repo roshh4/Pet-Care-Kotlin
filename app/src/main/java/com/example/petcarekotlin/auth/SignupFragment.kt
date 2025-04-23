@@ -9,17 +9,21 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.petcarekotlin.R
 import com.example.petcarekotlin.navigation.NavigationHelper
-import com.google.firebase.firestore.FirebaseFirestore
 
 class SignupFragment : Fragment() {
     private lateinit var usernameEditText: EditText
+    private lateinit var emailEditText: EditText
+    private lateinit var fullNameEditText: EditText
     private lateinit var passwordEditText: EditText
     private lateinit var confirmPasswordEditText: EditText
     private lateinit var signupButton: Button
     private lateinit var loginTextView: TextView
     private lateinit var navigationHelper: NavigationHelper
+    
+    private lateinit var viewModel: AuthViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,6 +33,8 @@ class SignupFragment : Fragment() {
 
         // Initialize views
         usernameEditText = view.findViewById(R.id.usernameEditText)
+        emailEditText = view.findViewById(R.id.emailEditText)
+        fullNameEditText = view.findViewById(R.id.fullNameEditText)
         passwordEditText = view.findViewById(R.id.passwordEditText)
         confirmPasswordEditText = view.findViewById(R.id.confirmPasswordEditText)
         signupButton = view.findViewById(R.id.signupButton)
@@ -36,29 +42,13 @@ class SignupFragment : Fragment() {
 
         // Initialize navigation helper
         navigationHelper = NavigationHelper(requireActivity().supportFragmentManager)
-
+        
+        // Initialize ViewModel
+        viewModel = ViewModelProvider(this)[AuthViewModel::class.java]
+        
         // Setup signup button click listener
         signupButton.setOnClickListener {
-            val username = usernameEditText.text.toString().trim()
-            val password = passwordEditText.text.toString().trim()
-            val confirmPassword = confirmPasswordEditText.text.toString().trim()
-
-            when {
-                username.isEmpty() -> {
-                    Toast.makeText(context, "Username cannot be empty", Toast.LENGTH_SHORT).show()
-                }
-                password.isEmpty() -> {
-                    Toast.makeText(context, "Password cannot be empty", Toast.LENGTH_SHORT).show()
-                }
-                password != confirmPassword -> {
-                    Toast.makeText(context, "Passwords do not match", Toast.LENGTH_SHORT).show()
-                }
-                else -> {
-                    signupButton.isEnabled = false
-                    signupButton.text = "Creating Account..."
-                    registerUser(username, password)
-                }
-            }
+            signupUser()
         }
 
         // Setup login text view click listener
@@ -70,51 +60,66 @@ class SignupFragment : Fragment() {
             }
             navigationHelper.navigateTo(LoginPageFragment(), args = args)
         }
+        
+        // Observe signup result
+        viewModel.signupResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is SignupResult.Success -> {
+                    Toast.makeText(context, "Account created successfully", Toast.LENGTH_SHORT).show()
+                    
+                    // Navigate back to login with the credentials
+                    val args = Bundle().apply {
+                        putString("username", usernameEditText.text.toString().trim())
+                        putString("password", passwordEditText.text.toString().trim())
+                    }
+                    navigationHelper.navigateTo(LoginPageFragment(), args = args)
+                }
+                is SignupResult.Error -> {
+                    Toast.makeText(context, result.message, Toast.LENGTH_SHORT).show()
+                    enableSignupButton()
+                }
+                null -> { /* Initial state, do nothing */ }
+            }
+        }
 
         return view
     }
-
-    private fun registerUser(username: String, password: String) {
-        val db = FirebaseFirestore.getInstance()
-        val usersRef = db.collection("users")
-
-        // Check if username already exists
-        usersRef.whereEqualTo("username", username)
-            .get()
-            .addOnSuccessListener { documents ->
-                if (documents.isEmpty) {
-                    // Username is available, create new user
-                    val user = hashMapOf(
-                        "username" to username,
-                        "password" to password
-                    )
-
-                    usersRef.add(user)
-                        .addOnSuccessListener {
-                            Toast.makeText(context, "Account created successfully", Toast.LENGTH_SHORT).show()
-                            
-                            // Navigate back to login with the credentials
-                            val args = Bundle().apply {
-                                putString("username", username)
-                                putString("password", password)
-                            }
-                            navigationHelper.navigateTo(LoginPageFragment(), args = args)
-                        }
-                        .addOnFailureListener {
-                            Toast.makeText(context, "Failed to create account", Toast.LENGTH_SHORT).show()
-                            signupButton.isEnabled = true
-                            signupButton.text = "Sign Up"
-                        }
-                } else {
-                    Toast.makeText(context, "Username already exists", Toast.LENGTH_SHORT).show()
-                    signupButton.isEnabled = true
-                    signupButton.text = "Sign Up"
-                }
+    
+    private fun signupUser() {
+        val username = usernameEditText.text.toString().trim()
+        val email = emailEditText.text.toString().trim()
+        val fullName = fullNameEditText.text.toString().trim()
+        val password = passwordEditText.text.toString().trim()
+        val confirmPassword = confirmPasswordEditText.text.toString().trim()
+        
+        // Validate input fields
+        val validationResult = viewModel.validateSignupInput(
+            username, email, fullName, password, confirmPassword
+        )
+        
+        when (validationResult) {
+            is ValidationResult.Success -> {
+                disableSignupButton()
+                viewModel.registerUser(username, email, fullName, password)
             }
-            .addOnFailureListener {
-                Toast.makeText(context, "Error checking username", Toast.LENGTH_SHORT).show()
-                signupButton.isEnabled = true
-                signupButton.text = "Sign Up"
+            is ValidationResult.Error -> {
+                Toast.makeText(context, validationResult.message, Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+    
+    private fun disableSignupButton() {
+        signupButton.isEnabled = false
+        signupButton.text = "Creating Account..."
+    }
+    
+    private fun enableSignupButton() {
+        signupButton.isEnabled = true
+        signupButton.text = "Sign Up"
+    }
+    
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.clearSignupResult()
     }
 } 
