@@ -60,16 +60,23 @@ class PetInfoFragment : Fragment() {
         weightEditText = view.findViewById(R.id.weightEditText)
         saveButton = view.findViewById(R.id.saveButton)
         
-        // Get current user ID (if available)
-        userId = FirebaseAuth.getInstance().currentUser?.uid ?: "user1" // Default for testing
+        // Get current user ID from SharedPreferences
+        val sharedPrefs = requireActivity().getSharedPreferences("PetCarePrefs", 0)
+        userId = sharedPrefs.getString("CURRENT_USER_ID", "user1") // Default for testing
+        
+        // Show debug information
+        val username = sharedPrefs.getString("CURRENT_USERNAME", "unknown")
+        Toast.makeText(context, "Logged in as: $username, User ID: $userId", Toast.LENGTH_LONG).show()
         
         // Get pet ID from arguments or try to fetch the default pet
         arguments?.let {
             petId = it.getString(ARG_PET_ID)
             if (petId != null) {
+                Toast.makeText(context, "Loading specified pet: $petId", Toast.LENGTH_SHORT).show()
                 loadPetData(petId!!)
             } else {
                 // Try to fetch the default pet for this user
+                Toast.makeText(context, "Fetching default pet for user: $userId", Toast.LENGTH_SHORT).show()
                 fetchDefaultPet()
             }
         } ?: fetchDefaultPet() // If no arguments, try to fetch default pet
@@ -82,47 +89,179 @@ class PetInfoFragment : Fragment() {
         // Show loading state
         setLoadingState(true)
         
-        // Query Firestore for the user's pets
-        db.collection("pets")
-            .whereEqualTo("ownerId", userId)
-            .limit(1) // Just get the first pet for now
+        // Get the user document
+        db.collection("users").document(userId ?: "user1")
             .get()
-            .addOnSuccessListener { documents ->
-                if (!documents.isEmpty) {
-                    // Get the first pet document
-                    val document = documents.documents[0]
-                    petId = document.id
-                    // Load the pet data
-                    loadPetDataFromDocument(document)
+            .addOnSuccessListener { userDocument ->
+                if (userDocument.exists()) {
+                    // Get the pets array from the user document
+                    val petsArray = userDocument.get("pets") as? List<*>
+                    
+                    Toast.makeText(context, "User document found. Pets array: ${petsArray?.size ?: 0} items", Toast.LENGTH_SHORT).show()
+                    
+                    if (!petsArray.isNullOrEmpty()) {
+                        // Get the first pet ID from the array
+                        val firstPetId = petsArray[0] as? String
+                        
+                        if (firstPetId != null) {
+                            Toast.makeText(context, "Found pet ID: $firstPetId", Toast.LENGTH_SHORT).show()
+                            petId = firstPetId
+                            
+                            // Now load the pet data using this ID
+                            loadPetData(firstPetId)
+                        } else {
+                            // Invalid pet ID
+                            Toast.makeText(context, "Invalid pet ID found in array", Toast.LENGTH_SHORT).show()
+                            createNewPet()
+                        }
+                    } else {
+                        // No pets found in the array - create a new one
+                        Toast.makeText(context, "No pets found for this user - creating new pet", Toast.LENGTH_SHORT).show()
+                        createNewPet()
+                    }
                 } else {
-                    // No pets found, show empty state
+                    // User document doesn't exist
+                    Toast.makeText(context, "User not found: $userId", Toast.LENGTH_SHORT).show()
                     showEmptyState()
+                    setLoadingState(false)
                 }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(context, "Error fetching user data: ${e.message}", Toast.LENGTH_SHORT).show()
+                showEmptyState()
+                setLoadingState(false)
+            }
+    }
+    
+    private fun createNewPet() {
+        // Create a new pet ID
+        val newPetId = "pet" + System.currentTimeMillis().toString().takeLast(5)
+        
+        // Create default pet data
+        val defaultPetData = hashMapOf(
+            "name" to "New Pet",
+            "species" to "Dog",
+            "breed" to "Mixed",
+            "age" to "0",
+            "weight" to "0",
+            "ownerId" to (userId ?: "user1"),
+            "createdAt" to System.currentTimeMillis(),
+            "lastUpdated" to System.currentTimeMillis()
+        )
+        
+        // Create the pet document
+        db.collection("pets").document(newPetId)
+            .set(defaultPetData)
+            .addOnSuccessListener {
+                // Set the pet ID
+                petId = newPetId
+                
+                // Add this pet to the user's pets array
+                updateUserPetsArray(newPetId)
+                
+                // Load the pet data
+                loadPetDataFromDefault(defaultPetData)
+                
+                Toast.makeText(context, "Created new pet: $newPetId", Toast.LENGTH_SHORT).show()
                 setLoadingState(false)
             }
             .addOnFailureListener { e ->
-                Toast.makeText(context, "Error fetching pets: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Error creating pet: ${e.message}", Toast.LENGTH_SHORT).show()
+                showEmptyState()
                 setLoadingState(false)
             }
+    }
+    
+    private fun loadPetDataFromDefault(petData: Map<String, Any>) {
+        try {
+            // Extract data from the map
+            val name = petData["name"] as? String ?: ""
+            val species = petData["species"] as? String ?: ""
+            val breed = petData["breed"] as? String ?: ""
+            val age = petData["age"] as? String ?: ""
+            val weight = petData["weight"] as? String ?: ""
+            
+            // Update headers
+            petNameHeader.text = name
+            petDetailsHeader.text = "$breed • $age years old"
+            
+            // Update form fields
+            petNameEditText.setText(name)
+            speciesEditText.setText(species)
+            breedEditText.setText(breed)
+            ageEditText.setText(age)
+            weightEditText.setText(weight)
+            
+            // Set pet image
+            try {
+                profileImage.setImageResource(R.drawable.ic_pet_placeholder)
+            } catch (e: Exception) {
+                // Fallback handling if resource not found
+            }
+        } catch (e: Exception) {
+            Toast.makeText(context, "Error setting pet data: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
     }
     
     private fun loadPetData(petId: String) {
         // Show loading state
         setLoadingState(true)
         
+        // Log the pet ID being loaded
+        Toast.makeText(context, "Loading pet: $petId", Toast.LENGTH_SHORT).show()
+        
         db.collection("pets").document(petId)
             .get()
             .addOnSuccessListener { document ->
                 if (document != null && document.exists()) {
+                    // Pet document exists, load its data
                     loadPetDataFromDocument(document)
+                    setLoadingState(false)
                 } else {
-                    showEmptyState()
-                    Toast.makeText(context, "Pet not found", Toast.LENGTH_SHORT).show()
+                    // Pet document doesn't exist, create a new one with default values
+                    Toast.makeText(context, "Creating new pet document for ID: $petId", Toast.LENGTH_SHORT).show()
+                    
+                    // Create default pet data
+                    val defaultPetData = hashMapOf(
+                        "name" to "New Pet",
+                        "species" to "Dog",
+                        "breed" to "Mixed",
+                        "age" to "0",
+                        "weight" to "0",
+                        "ownerId" to (userId ?: "user1"),
+                        "createdAt" to System.currentTimeMillis(),
+                        "lastUpdated" to System.currentTimeMillis()
+                    )
+                    
+                    // Create the pet document with the specified ID
+                    db.collection("pets").document(petId)
+                        .set(defaultPetData)
+                        .addOnSuccessListener {
+                            Toast.makeText(context, "Pet document created successfully", Toast.LENGTH_SHORT).show()
+                            
+                            // Now load the data from the new document
+                            db.collection("pets").document(petId)
+                                .get()
+                                .addOnSuccessListener { newDocument ->
+                                    loadPetDataFromDocument(newDocument)
+                                    setLoadingState(false)
+                                }
+                                .addOnFailureListener { e ->
+                                    Toast.makeText(context, "Error loading new pet: ${e.message}", Toast.LENGTH_SHORT).show()
+                                    showEmptyState()
+                                    setLoadingState(false)
+                                }
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(context, "Error creating pet document: ${e.message}", Toast.LENGTH_SHORT).show()
+                            showEmptyState()
+                            setLoadingState(false)
+                        }
                 }
-                setLoadingState(false)
             }
             .addOnFailureListener { e ->
                 Toast.makeText(context, "Error loading pet data: ${e.message}", Toast.LENGTH_SHORT).show()
+                showEmptyState()
                 setLoadingState(false)
             }
     }
@@ -255,6 +394,9 @@ class PetInfoFragment : Fragment() {
                     petNameHeader.text = name
                     petDetailsHeader.text = "$breed • $age years old"
                     
+                    // Ensure this pet is in the user's pets array
+                    updateUserPetsArray(petId!!)
+                    
                     setLoadingState(false)
                 }
                 .addOnFailureListener { e ->
@@ -266,12 +408,17 @@ class PetInfoFragment : Fragment() {
             db.collection("pets")
                 .add(petData)
                 .addOnSuccessListener { documentReference ->
-                    petId = documentReference.id
+                    val newPetId = documentReference.id
+                    petId = newPetId
+                    
                     Toast.makeText(context, "Pet added successfully", Toast.LENGTH_SHORT).show()
                     
                     // Update the header text
                     petNameHeader.text = name
                     petDetailsHeader.text = "$breed • $age years old"
+                    
+                    // Add this pet to the user's pets array
+                    updateUserPetsArray(newPetId)
                     
                     setLoadingState(false)
                 }
@@ -280,6 +427,40 @@ class PetInfoFragment : Fragment() {
                     setLoadingState(false)
                 }
         }
+    }
+    
+    private fun updateUserPetsArray(petId: String) {
+        // Get the current user document
+        db.collection("users").document(userId ?: "user1")
+            .get()
+            .addOnSuccessListener { userDoc ->
+                if (userDoc.exists()) {
+                    // Get the current pets array
+                    val currentPets = userDoc.get("pets") as? List<String> ?: listOf()
+                    
+                    // Check if the pet ID is already in the array
+                    if (!currentPets.contains(petId)) {
+                        // Add the pet ID to the array
+                        val updatedPets = currentPets.toMutableList()
+                        updatedPets.add(petId)
+                        
+                        // Update the user document
+                        db.collection("users").document(userId ?: "user1")
+                            .update("pets", updatedPets)
+                            .addOnSuccessListener {
+                                Toast.makeText(context, "Pet added to user profile", Toast.LENGTH_SHORT).show()
+                            }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(context, "Error updating user profile: ${e.message}", Toast.LENGTH_SHORT).show()
+                            }
+                    }
+                } else {
+                    Toast.makeText(context, "User document not found", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(context, "Error accessing user document: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
     }
     
     companion object {

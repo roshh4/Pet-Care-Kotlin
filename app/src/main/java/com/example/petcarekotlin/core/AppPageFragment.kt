@@ -93,6 +93,11 @@ class AppPageFragment : Fragment(), FooterFragment.OnFooterNavigationListener {
         
         // Load main content - Home fragment
         loadFragment(HomePageFragment(), "home", R.id.nav_home)
+
+        // OPTIONAL: Load the pet info page after a short delay to ensure login data is processed
+        view.postDelayed({
+            showPetInfoPage()
+        }, 500) // Half second delay
     }
     
     private fun setupBackPressedHandler() {
@@ -289,5 +294,26 @@ class AppPageFragment : Fragment(), FooterFragment.OnFooterNavigationListener {
                 Log.e("AppPageFragment", "Error navigating to section", e)
             }
         }
+    }
+
+    // Function to show the pet info page
+    fun showPetInfoPage() {
+        // Get current user ID from shared preferences
+        val sharedPrefs = requireActivity().getSharedPreferences("PetCarePrefs", 0)
+        val userId = sharedPrefs.getString("CURRENT_USER_ID", "user1")
+        val username = sharedPrefs.getString("CURRENT_USERNAME", "unknown")
+        
+        // Update UI
+        headerFragment.setTitle("Pet Details")
+        headerFragment.showBackButton(true)
+        
+        // Create and load the fragment
+        val fragment = com.example.petcarekotlin.profile.PetInfoFragment.newInstance()
+        currentFragmentTag = "petinfo"
+        
+        // Load the fragment
+        childFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment, "petinfo")
+            .commit()
     }
 } 

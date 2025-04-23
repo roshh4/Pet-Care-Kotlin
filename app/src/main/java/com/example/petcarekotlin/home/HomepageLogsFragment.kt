@@ -138,7 +138,7 @@ class HomepageLogsFragment : Fragment() {
                     
                     // Update UI with the first pet
                     if (petList.isNotEmpty()) {
-                        updateUI(requireView())
+                        view?.let { updateUI(it) }
                     }
                 }
             }
@@ -205,7 +205,7 @@ class HomepageLogsFragment : Fragment() {
                                     
                                     // If this is the current displayed pet, update UI
                                     if (petIndex == currentIndex) {
-                                        updateUI(requireView())
+                                        view?.let { updateUI(it) }
                                     }
                                 }
                         }

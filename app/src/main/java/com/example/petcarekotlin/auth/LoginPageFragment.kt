@@ -66,7 +66,15 @@ class LoginPageFragment : Fragment() {
         viewModel.loginResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is LoginResult.Success -> {
-                    Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show()
+                    // Display username and userId in a Toast message
+                    val usernameOrEmail = usernameEditText.text.toString().trim()
+                    Toast.makeText(context, "Login successful! Username: $usernameOrEmail, UserID: ${result.userId}", Toast.LENGTH_LONG).show()
+                    
+                    // Save the userId to shared preferences for use throughout the app
+                    val sharedPrefs = requireActivity().getSharedPreferences("PetCarePrefs", 0)
+                    sharedPrefs.edit().putString("CURRENT_USER_ID", result.userId).apply()
+                    sharedPrefs.edit().putString("CURRENT_USERNAME", usernameOrEmail).apply()
+                    
                     // Navigate to the main app page
                     navigationHelper.navigateTo(AppPageFragment())
                 }
