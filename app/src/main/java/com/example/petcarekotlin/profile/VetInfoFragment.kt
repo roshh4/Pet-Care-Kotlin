@@ -56,21 +56,26 @@ class VetInfoFragment : Fragment() {
         vetNameEditText.setText("")
         vetContactEditText.setText("")
         
-        // Get current user ID
-        userId = FirebaseAuth.getInstance().currentUser?.uid ?: "user1" // Default for testing
+        // Get current user ID from SharedPreferences
+        val sharedPrefs = requireActivity().getSharedPreferences("PetCarePrefs", 0)
+        userId = sharedPrefs.getString("CURRENT_USER_ID", "user1") // Default for testing
+        
+        // Show debug information
+        val username = sharedPrefs.getString("CURRENT_USERNAME", "unknown")
+        Toast.makeText(context, "Logged in as: $username, User ID: $userId", Toast.LENGTH_SHORT).show()
         
         // Get pet ID from arguments or try to fetch the default pet
         arguments?.let {
             petId = it.getString(ARG_PET_ID)
-        }
-        
-        // Load vet data if we have a pet ID
-        if (petId != null) {
-            loadVetData(petId!!)
-        } else {
-            // Try to fetch the default pet and its vet info
-            fetchDefaultPet()
-        }
+            if (petId != null) {
+                Toast.makeText(context, "Loading vet info for pet: $petId", Toast.LENGTH_SHORT).show()
+                loadVetData(petId!!)
+            } else {
+                // Try to fetch the default pet and its vet info
+                Toast.makeText(context, "Fetching default pet for user: $userId", Toast.LENGTH_SHORT).show()
+                fetchDefaultPet()
+            }
+        } ?: fetchDefaultPet() // If no arguments, try to fetch default pet
         
         // Set up save button click listener
         saveButton.setOnClickListener {
@@ -82,27 +87,44 @@ class VetInfoFragment : Fragment() {
         // Show loading state
         setLoadingState(true)
         
-        // Query Firestore for the user's pets
-        db.collection("pets")
-            .whereEqualTo("ownerId", userId)
-            .limit(1) // Just get the first pet for now
+        // Get the user document
+        db.collection("users").document(userId ?: "user1")
             .get()
-            .addOnSuccessListener { documents ->
-                if (!documents.isEmpty) {
-                    // Get the first pet document
-                    val document = documents.documents[0]
-                    petId = document.id
+            .addOnSuccessListener { userDocument ->
+                if (userDocument.exists()) {
+                    // Get the pets array from the user document
+                    val petsArray = userDocument.get("pets") as? List<*>
                     
-                    // Load the vet data for this pet
-                    loadVetData(petId!!)
+                    Toast.makeText(context, "User document found. Pets array: ${petsArray?.size ?: 0} items", Toast.LENGTH_SHORT).show()
+                    
+                    if (!petsArray.isNullOrEmpty()) {
+                        // Get the first pet ID from the array
+                        val firstPetId = petsArray[0] as? String
+                        
+                        if (firstPetId != null) {
+                            Toast.makeText(context, "Found pet ID: $firstPetId", Toast.LENGTH_SHORT).show()
+                            petId = firstPetId
+                            
+                            // Now load the vet data using this ID
+                            loadVetData(firstPetId)
+                        } else {
+                            // Invalid pet ID
+                            Toast.makeText(context, "Invalid pet ID found in array", Toast.LENGTH_SHORT).show()
+                            setLoadingState(false)
+                        }
+                    } else {
+                        // No pets found in the array
+                        Toast.makeText(context, "No pets found for this user", Toast.LENGTH_SHORT).show()
+                        setLoadingState(false)
+                    }
                 } else {
-                    // No pets found, just show empty fields
-                    Toast.makeText(context, "No pets found. Create a pet first.", Toast.LENGTH_SHORT).show()
+                    // User document doesn't exist
+                    Toast.makeText(context, "User not found: $userId", Toast.LENGTH_SHORT).show()
                     setLoadingState(false)
                 }
             }
             .addOnFailureListener { e ->
-                Toast.makeText(context, "Error fetching pets: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Error fetching user data: ${e.message}", Toast.LENGTH_SHORT).show()
                 setLoadingState(false)
             }
     }
@@ -112,57 +134,96 @@ class VetInfoFragment : Fragment() {
         setLoadingState(true)
         
         // Log for debugging
-        println("Fetching vet data for pet ID: $petId")
+        Toast.makeText(context, "Loading vet data for pet ID: $petId", Toast.LENGTH_SHORT).show()
         
-        // Get the pet document which contains the vetInfo map (with capital I)
+        // Get the pet document which contains the vetInfo map
         db.collection("pets").document(petId)
             .get()
             .addOnSuccessListener { document ->
                 if (document != null && document.exists()) {
                     try {
-                        println("Pet document found: ${document.id}")
-                        println("Document data: ${document.data}")
-                        
-                        // Get the vetInfo map from the document - note the capital "I"
+                        // Get the vetInfo map from the document
                         val vetInfoMap = document.get("vetInfo") as? Map<*, *>
-                        
-                        println("VetInfo map: $vetInfoMap")
                         
                         if (vetInfoMap != null) {
                             // Extract vetName and vetContact from the map
                             val vetName = vetInfoMap["vetName"] as? String ?: ""
                             val vetContact = vetInfoMap["vetContact"] as? String ?: ""
                             
-                            println("Extracted vetName: $vetName, vetContact: $vetContact")
-                            
                             // Update UI with the extracted data
                             updateUIWithVetInfo(vetName, vetContact)
-
+                            Toast.makeText(context, "Vet info loaded successfully", Toast.LENGTH_SHORT).show()
                         } else {
-                            // No vetInfo map found - show empty fields
-                            println("No vetInfo map found in document")
-                            println("Available fields: ${document.data?.keys}")
+                            // No vetInfo map found - create one with default values
+                            Toast.makeText(context, "Creating new vet info for this pet", Toast.LENGTH_SHORT).show()
+                            
+                            // Default empty values
                             updateUIWithVetInfo("", "")
                             
-                            // Show message
-                            Toast.makeText(context, "No vet info found for this pet", Toast.LENGTH_SHORT).show()
+                            // Create the vetInfo map in Firestore
+                            val vetInfo = hashMapOf(
+                                "vetName" to "",
+                                "vetContact" to "",
+                                "nextAppointment" to "",
+                                "notes" to "",
+                                "lastUpdated" to System.currentTimeMillis()
+                            )
+                            
+                            // Update the pet document with the new vetInfo map
+                            db.collection("pets").document(petId)
+                                .update("vetInfo", vetInfo)
+                                .addOnSuccessListener {
+                                    Toast.makeText(context, "Vet info initialized successfully", Toast.LENGTH_SHORT).show()
+                                }
+                                .addOnFailureListener { e ->
+                                    Toast.makeText(context, "Failed to initialize vet info: ${e.message}", Toast.LENGTH_SHORT).show()
+                                }
                         }
                     } catch (e: Exception) {
                         // Handle any parsing errors
-                        println("Error parsing vet data: ${e.message}")
-                        e.printStackTrace()
                         Toast.makeText(context, "Error parsing vet data: ${e.message}", Toast.LENGTH_SHORT).show()
                         updateUIWithVetInfo("", "")
                     }
                 } else {
-                    println("Pet document not found")
-                    Toast.makeText(context, "Pet not found", Toast.LENGTH_SHORT).show()
+                    // Pet document doesn't exist - create it with default values
+                    Toast.makeText(context, "Pet document not found. Creating default pet document.", Toast.LENGTH_SHORT).show()
+                    
+                    // Create default pet data
+                    val defaultPetData = hashMapOf(
+                        "name" to "New Pet",
+                        "species" to "Dog",
+                        "breed" to "Mixed",
+                        "age" to "0",
+                        "weight" to "0",
+                        "ownerId" to (userId ?: "user1"),
+                        "vetInfo" to hashMapOf(
+                            "vetName" to "",
+                            "vetContact" to "",
+                            "nextAppointment" to "",
+                            "notes" to "",
+                            "lastUpdated" to System.currentTimeMillis()
+                        ),
+                        "createdAt" to System.currentTimeMillis(),
+                        "lastUpdated" to System.currentTimeMillis()
+                    )
+                    
+                    // Create the pet document with the specified ID
+                    db.collection("pets").document(petId)
+                        .set(defaultPetData)
+                        .addOnSuccessListener {
+                            Toast.makeText(context, "Pet document created successfully", Toast.LENGTH_SHORT).show()
+                            updateUIWithVetInfo("", "")
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(context, "Error creating pet document: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    
+                    // Show empty fields
+                    updateUIWithVetInfo("", "")
                 }
                 setLoadingState(false)
             }
             .addOnFailureListener { e ->
-                println("Error loading pet data: ${e.message}")
-                e.printStackTrace()
                 Toast.makeText(context, "Error loading pet data: ${e.message}", Toast.LENGTH_SHORT).show()
                 setLoadingState(false)
             }
@@ -192,12 +253,9 @@ class VetInfoFragment : Fragment() {
         
         // Show loading state
         setLoadingState(true)
+        Toast.makeText(context, "Saving vet data for pet ID: $petId", Toast.LENGTH_SHORT).show()
         
-        // Log for debugging
-        println("Saving vet data for pet ID: $petId")
-        println("VetName: $vetName, VetContact: $vetContact")
-        
-        // Create vetInfo map with our values - preserving existing data
+        // First try to get existing vet info to preserve other fields
         db.collection("pets").document(petId!!)
             .get()
             .addOnSuccessListener { document ->
@@ -220,17 +278,16 @@ class VetInfoFragment : Fragment() {
                     updatedVetInfo["vetContact"] = vetContact
                     updatedVetInfo["lastUpdated"] = System.currentTimeMillis()
                     
-                    // Update in Firestore with capital "I" in vetInfo
+                    // Update in Firestore
                     db.collection("pets").document(petId!!)
                         .update("vetInfo", updatedVetInfo)
                         .addOnSuccessListener {
-                            println("Vet info saved successfully")
                             Toast.makeText(context, "Veterinarian info saved successfully", Toast.LENGTH_SHORT).show()
                             setLoadingState(false)
                         }
                         .addOnFailureListener { e ->
-                            println("Error updating vet info: ${e.message}")
-                            e.printStackTrace()
+                            Toast.makeText(context, "Error updating vet info: ${e.message}", Toast.LENGTH_SHORT).show()
+                            // Try direct set as fallback
                             trySetVetInfo(vetName, vetContact)
                         }
                 } else {
@@ -239,38 +296,36 @@ class VetInfoFragment : Fragment() {
                 }
             }
             .addOnFailureListener { e ->
-                println("Error getting document to update: ${e.message}")
-                e.printStackTrace()
-                
+                Toast.makeText(context, "Error getting pet document: ${e.message}", Toast.LENGTH_SHORT).show()
                 // Try direct set as fallback
                 trySetVetInfo(vetName, vetContact)
             }
     }
     
     private fun trySetVetInfo(vetName: String, vetContact: String) {
-        // Create basic vetInfo
+        // Create basic vetInfo with necessary fields
         val vetInfo = hashMapOf(
             "vetName" to vetName,
             "vetContact" to vetContact,
+            "nextAppointment" to "",
+            "notes" to "",
             "lastUpdated" to System.currentTimeMillis()
         )
         
-        // Use capital "I" in vetInfo field name
+        // Include the vetInfo field in the pet data map
         val petData = hashMapOf(
             "vetInfo" to vetInfo
         )
         
+        // Merge with existing document to preserve other fields
         db.collection("pets").document(petId!!)
             .set(petData, com.google.firebase.firestore.SetOptions.merge())
             .addOnSuccessListener {
-                println("Vet info set successfully with merge option")
                 Toast.makeText(context, "Veterinarian info saved successfully", Toast.LENGTH_SHORT).show()
                 setLoadingState(false)
             }
             .addOnFailureListener { innerE ->
-                println("Error setting vet info: ${innerE.message}")
-                innerE.printStackTrace()
-                Toast.makeText(context, "Error saving vet info: ${innerE.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Error setting vet info: ${innerE.message}", Toast.LENGTH_SHORT).show()
                 setLoadingState(false)
             }
     }

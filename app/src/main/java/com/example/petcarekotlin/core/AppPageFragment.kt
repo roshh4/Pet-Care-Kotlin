@@ -93,11 +93,6 @@ class AppPageFragment : Fragment(), FooterFragment.OnFooterNavigationListener {
         
         // Load main content - Home fragment
         loadFragment(HomePageFragment(), "home", R.id.nav_home)
-
-        // OPTIONAL: Load the pet info page after a short delay to ensure login data is processed
-        view.postDelayed({
-            showPetInfoPage()
-        }, 500) // Half second delay
     }
     
     private fun setupBackPressedHandler() {
