@@ -2,22 +2,42 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@drawable/card_background"
+    android:orientation="horizontal"
+    android:background="@drawable/component_background"
     android:padding="12dp"
+    android:gravity="center_vertical"
     android:layout_marginBottom="12dp">
+    
+    <ImageView
+        android:id="@+id/activityIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/circle_background"
+        android:backgroundTint="@color/text_pink"
+        android:padding="8dp"
+        android:src="@drawable/ic_pet_paw"
+        android:tint="@color/white"
+        android:layout_marginEnd="12dp" />
 
-    <TextView
-        android:id="@+id/activityText"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Activity description" />
+        android:orientation="vertical">
+        
+        <TextView
+            android:id="@+id/activityText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mike fed Buddy"
+            android:textColor="@color/text_brown"
+            android:textSize="16sp" />
 
-    <TextView
-        android:id="@+id/activityTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Time info"
-        android:textSize="12sp"
-        android:textColor="#888888" />
+        <TextView
+            android:id="@+id/activityTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Today, 8:30 AM"
+            android:textSize="14sp"
+            android:textColor="@color/text_pink" />
+    </LinearLayout>
 </LinearLayout>

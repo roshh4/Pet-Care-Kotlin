@@ -7,22 +7,47 @@
     android:background="@drawable/card_background"
     android:elevation="4dp">
 
-    <TextView
-        android:id="@+id/petNameTextView"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="🐾 Buddy"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="#5A4231" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            
+            <TextView
+                android:id="@+id/petNameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🐾 Buddy"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_brown" />
 
-    <TextView
-        android:id="@+id/petDetailsTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Golden Retriever • 3 years old"
-        android:textSize="16sp"
-        android:textColor="#8D6E63" />
+            <TextView
+                android:id="@+id/petDetailsTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Golden Retriever • 3 years old"
+                android:textSize="16sp"
+                android:textColor="@color/text_gray" />
+        </LinearLayout>
+        
+        <Button
+            android:id="@+id/switchPetButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Switch Pet"
+            android:textColor="@color/text_brown"
+            android:background="@android:color/transparent"
+            android:backgroundTint="@android:color/transparent"
+            android:textAllCaps="false"
+            android:stateListAnimator="@null" />
+    </LinearLayout>
 
     <!-- Last Fed & Food Remaining -->
     <LinearLayout
@@ -38,11 +63,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:padding="8dp">
+            android:padding="12dp"
+            android:layout_marginEnd="6dp"
+            android:background="@drawable/component_background">
 
             <TextView
                 android:text="Last Fed"
-                android:textColor="#7B5E57"
+                android:textColor="@color/text_gray"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -51,14 +78,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Today, 8:30 AM"
-                android:textStyle="bold" />
+                android:textColor="@color/text_pink"
+                android:textStyle="bold"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/fedByTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="by Mike"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:textColor="@color/text_gray" />
         </LinearLayout>
 
         <LinearLayout
@@ -67,11 +97,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:padding="8dp">
+            android:padding="12dp"
+            android:layout_marginStart="6dp"
+            android:background="@drawable/component_background">
 
             <TextView
                 android:text="Food Remaining"
-                android:textColor="#7B5E57"
+                android:textColor="@color/text_gray"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -80,14 +112,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="1.2 kg"
-                android:textStyle="bold" />
+                android:textColor="@color/text_pink"
+                android:textStyle="bold"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/estimatedDaysLeftTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="~7 days left"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:textColor="@color/text_gray" />
         </LinearLayout>
     </LinearLayout>
 
@@ -97,12 +132,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="8dp"
-        android:padding="8dp">
+        android:layout_marginTop="12dp"
+        android:padding="12dp"
+        android:background="@drawable/component_background">
 
         <TextView
             android:text="Next Vet Appointment"
-            android:textColor="#7B5E57"
+            android:textColor="@color/text_gray"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -111,13 +147,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="May 15, 2025 - 2:00 PM"
-            android:textStyle="bold" />
+            android:textColor="@color/text_pink"
+            android:textStyle="bold"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/vetDetailsTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Dr. Martinez - Annual Checkup"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:textColor="@color/text_gray" />
     </LinearLayout>
 </LinearLayout>

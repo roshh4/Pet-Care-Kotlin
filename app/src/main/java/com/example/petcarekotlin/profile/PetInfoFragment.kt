@@ -22,7 +22,6 @@ class PetInfoFragment : Fragment() {
     private lateinit var editPhotoButton: ImageView
     private lateinit var petNameHeader: TextView
     private lateinit var petDetailsHeader: TextView
-    private lateinit var notificationIcon: ImageView
     
     private lateinit var petNameEditText: EditText
     private lateinit var speciesEditText: EditText
@@ -336,11 +335,6 @@ class PetInfoFragment : Fragment() {
         // Edit photo button click
         editPhotoButton.setOnClickListener {
             Toast.makeText(context, "Photo selection will be implemented", Toast.LENGTH_SHORT).show()
-        }
-        
-        // Notification button click
-        notificationIcon.setOnClickListener {
-            Toast.makeText(context, "Notifications will be implemented", Toast.LENGTH_SHORT).show()
         }
         
         // Save button click

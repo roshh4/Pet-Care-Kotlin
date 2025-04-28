@@ -54,6 +54,11 @@ class HomepageLogsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
+        // Set up switch pet button
+        view.findViewById<Button>(R.id.switchPetButton).setOnClickListener {
+            showPetSelectionDialog()
+        }
+        
         // Clear any existing data
         petList.clear()
         
@@ -98,20 +103,17 @@ class HomepageLogsFragment : Fragment() {
                         Log.d(TAG, "User has no pets")
                         updateUIForNoPets()
                     } else {
-                        // Get the first pet ID from the array
-                        val firstPetId = petsArray.filterIsInstance<String>().firstOrNull()
-                        
-                        if (firstPetId == null) {
-                            updateUIForNoPets()
-                            return@addOnSuccessListener
+                        // Fetch details for all pets
+                        petsArray.filterIsInstance<String>().forEach { petId ->
+                            fetchPetDetails(petId)
                         }
                         
-                        // Save current pet ID to SharedPreferences for use by other fragments
-                        val sharedPrefs = requireActivity().getSharedPreferences("PetCarePrefs", Context.MODE_PRIVATE)
-                        sharedPrefs.edit().putString("CURRENT_PET_ID", firstPetId).apply()
-                        
-                        // Fetch this pet's details
-                        fetchPetDetails(firstPetId)
+                        // Set current pet ID to SharedPreferences for use by other fragments
+                        val firstPetId = petsArray.filterIsInstance<String>().firstOrNull()
+                        if (firstPetId != null) {
+                            val sharedPrefs = requireActivity().getSharedPreferences("PetCarePrefs", Context.MODE_PRIVATE)
+                            sharedPrefs.edit().putString("CURRENT_PET_ID", firstPetId).apply()
+                        }
                     }
                 } else {
                     // User document doesn't exist
@@ -188,20 +190,27 @@ class HomepageLogsFragment : Fragment() {
                     petList.add(pet)
                     
                     // Get the most recent feeding log
-                    fetchLastFeeding(petId, 0)
+                    fetchLastFeeding(petId, petList.size - 1)
                     
-                    // Update UI with this pet
-                    view?.let { updateUI(it) }
+                    // Update UI with the first pet
+                    if (petList.size == 1) {
+                        currentIndex = 0
+                        view?.let { updateUI(it) }
+                    }
                 } else {
                     // Pet document doesn't exist
                     Log.e(TAG, "Pet document not found")
-                    updateUIForNoPets()
+                    if (petList.isEmpty()) {
+                        updateUIForNoPets()
+                    }
                 }
             }
             .addOnFailureListener { exception ->
                 Log.e(TAG, "Error getting pet document", exception)
                 Toast.makeText(context, "Error loading pet data: ${exception.message}", Toast.LENGTH_SHORT).show()
-                updateUIForNoPets()
+                if (petList.isEmpty()) {
+                    updateUIForNoPets()
+                }
             }
     }
     
@@ -280,6 +289,7 @@ class HomepageLogsFragment : Fragment() {
         view.findViewById<View>(R.id.lastFedLayout)?.visibility = View.GONE
         view.findViewById<View>(R.id.foodRemainingLayout)?.visibility = View.GONE
         view.findViewById<View>(R.id.vetAppointmentLayout)?.visibility = View.GONE
+        view.findViewById<Button>(R.id.switchPetButton)?.visibility = View.GONE
     }
 
     private fun updateUI(view: View) {
@@ -292,12 +302,17 @@ class HomepageLogsFragment : Fragment() {
             view.findViewById<View>(R.id.lastFedLayout)?.visibility = View.GONE
             view.findViewById<View>(R.id.foodRemainingLayout)?.visibility = View.GONE
             view.findViewById<View>(R.id.vetAppointmentLayout)?.visibility = View.GONE
+            view.findViewById<Button>(R.id.switchPetButton)?.visibility = View.GONE
             
             // Clear current pet ID in SharedPreferences
             val sharedPrefs = requireActivity().getSharedPreferences("PetCarePrefs", Context.MODE_PRIVATE)
             sharedPrefs.edit().remove("CURRENT_PET_ID").apply()
         } else {
             val pet = petList[currentIndex]
+            
+            // Show the switch button only if there are multiple pets
+            view.findViewById<Button>(R.id.switchPetButton)?.visibility = 
+                if (petList.size > 1) View.VISIBLE else View.GONE
             
             // Save current pet ID to SharedPreferences
             val sharedPrefs = requireActivity().getSharedPreferences("PetCarePrefs", Context.MODE_PRIVATE)
@@ -317,6 +332,59 @@ class HomepageLogsFragment : Fragment() {
             view.findViewById<TextView>(R.id.vetDateTimeTextView).text = pet.vetDateTime
             view.findViewById<TextView>(R.id.vetDetailsTextView).text = pet.vetDetails
         }
+    }
+    
+    private fun showPetSelectionDialog() {
+        if (petList.isEmpty()) return
+        
+        val dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.dialog_select_pet)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        
+        val listView = dialog.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.petListView)
+        val closeButton = dialog.findViewById<ImageView>(R.id.closeButton)
+        
+        // Set up RecyclerView with adapter for pet selection
+        listView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
+        
+        // Create a simple adapter for the pet list
+        val adapter = object : androidx.recyclerview.widget.RecyclerView.Adapter<androidx.recyclerview.widget.RecyclerView.ViewHolder>() {
+            inner class PetViewHolder(view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
+                val name: TextView = view.findViewById(R.id.petNameTextView)
+                val details: TextView = view.findViewById(R.id.petDetailsTextView)
+            }
+            
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): androidx.recyclerview.widget.RecyclerView.ViewHolder {
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.item_simple_pet, parent, false)
+                return PetViewHolder(view)
+            }
+            
+            override fun getItemCount(): Int = petList.size
+            
+            override fun onBindViewHolder(holder: androidx.recyclerview.widget.RecyclerView.ViewHolder, position: Int) {
+                val pet = petList[position]
+                val viewHolder = holder as PetViewHolder
+                
+                viewHolder.name.text = pet.name
+                viewHolder.details.text = "${pet.breed} • ${pet.age}"
+                
+                // Set click listener
+                holder.itemView.setOnClickListener {
+                    currentIndex = position
+                    view?.let { updateUI(it) }
+                    dialog.dismiss()
+                }
+            }
+        }
+        
+        listView.adapter = adapter
+        
+        // Set close button click listener
+        closeButton.setOnClickListener {
+            dialog.dismiss()
+        }
+        
+        dialog.show()
     }
     
     fun showAddPetDialog() {
