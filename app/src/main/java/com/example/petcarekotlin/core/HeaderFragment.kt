@@ -31,13 +31,10 @@ class HeaderFragment : Fragment() {
     private lateinit var profileIcon: ImageView
     private lateinit var appLogo: ImageView
     
-    // Title text to be displayed in the header
-    private var headerTitle: String = "Pet Care"
+    // Fixed title - will never change during navigation
+    private val fixedHeaderTitle: String = "Pet Care Reminder"
     
-    // Flag to control back button visibility
-    private var showBackButton: Boolean = false
-    
-    // Listener for back button click
+    // Listener for back button click (we'll still keep this for functionality)
     private var onBackClickListener: (() -> Unit)? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,11 +58,19 @@ class HeaderFragment : Fragment() {
         profileIcon = view.findViewById(R.id.profile_icon)
         appLogo = view.findViewById(R.id.app_logo)
         
-        // Set the header title
-        titleTextView.text = headerTitle
+        // Set the fixed header title
+        titleTextView.text = fixedHeaderTitle
         
-        // Set back button visibility
-        updateBackButtonVisibility()
+        // Always show the paw icon instead of back button
+        backButton.visibility = View.GONE
+        appLogo.visibility = View.VISIBLE
+        
+        // Keep back navigation functionality by making the paw icon act as a back button when needed
+        appLogo.setOnClickListener {
+            if (onBackClickListener != null) {
+                onBackClickListener?.invoke()
+            }
+        }
         
         // Set click listener for profile icon
         profileIcon.setOnClickListener {
@@ -77,52 +82,54 @@ class HeaderFragment : Fragment() {
             }
         }
         
-        // Set click listener for back button
-        backButton.setOnClickListener {
-            onBackClickListener?.invoke() ?: activity?.onBackPressed()
-        }
-        
         return view
     }
 
     /**
-     * Set the title to be displayed in the header
+     * Title will always be "Pet Care Reminder"
      */
     fun setTitle(title: String) {
-        headerTitle = title
+        // Do nothing - we keep the fixed title
         if (::titleTextView.isInitialized) {
-            titleTextView.text = title
+            titleTextView.text = fixedHeaderTitle
         }
     }
     
     /**
-     * Show or hide the back button
+     * We always show the paw logo now, but we still track if we're in a "back" state
+     * to determine the behavior of the paw icon click
      */
     fun showBackButton(show: Boolean) {
-        showBackButton = show
-        if (::backButton.isInitialized) {
-            updateBackButtonVisibility()
+        // In this updated version, we always show the paw icon
+        // but we'll change its click behavior based on whether we're on a details page
+        
+        if (::appLogo.isInitialized) {
+            if (show) {
+                // Make the paw logo clickable for back navigation
+                appLogo.isClickable = true
+                appLogo.isFocusable = true
+            } else {
+                // On main screens, the paw logo is just decorative
+                appLogo.isClickable = false
+                appLogo.isFocusable = false
+                // Clear any click listeners
+                appLogo.setOnClickListener(null)
+            }
         }
     }
     
     /**
-     * Update visibility of back button and app logo
-     */
-    private fun updateBackButtonVisibility() {
-        if (showBackButton) {
-            backButton.visibility = View.VISIBLE
-            appLogo.visibility = View.GONE
-        } else {
-            backButton.visibility = View.GONE
-            appLogo.visibility = View.VISIBLE
-        }
-    }
-    
-    /**
-     * Set a custom action for the back button
+     * Set a custom action for back navigation
      */
     fun setOnBackClickListener(listener: () -> Unit) {
         onBackClickListener = listener
+        
+        // Update the paw logo to use this listener if it's initialized
+        if (::appLogo.isInitialized) {
+            appLogo.setOnClickListener {
+                listener.invoke()
+            }
+        }
     }
 
     companion object {

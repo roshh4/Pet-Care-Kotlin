@@ -51,7 +51,6 @@ class PetInfoFragment : Fragment() {
         editPhotoButton = view.findViewById(R.id.editPhotoButton)
         petNameHeader = view.findViewById(R.id.petNameHeader)
         petDetailsHeader = view.findViewById(R.id.petDetailsHeader)
-        notificationIcon = view.findViewById(R.id.notificationIcon)
         
         petNameEditText = view.findViewById(R.id.petNameEditText)
         speciesEditText = view.findViewById(R.id.speciesEditText)

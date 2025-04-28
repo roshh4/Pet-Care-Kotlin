@@ -2,11 +2,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#FFBB86FC"
+    android:background="#FADADD"
     android:padding="12dp"
     android:fitsSystemWindows="true">
 
-    <!-- Back Button -->
+    <!-- Back Button - always hidden now -->
     <ImageView
         android:id="@+id/back_button"
         android:layout_width="24dp"
@@ -18,25 +18,25 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
-    <!-- App Logo (Paw Icon) -->
+    <!-- App Logo (Paw Icon) with pink tint - always visible -->
     <ImageView
         android:id="@+id/app_logo"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:src="@drawable/ic_paw"
         android:contentDescription="Pet Care Logo"
+        app:tint="#FFB6B6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_goneMarginStart="0dp" />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
-    <!-- Title Text -->
+    <!-- Title Text with dark color -->
     <TextView
         android:id="@+id/header_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Pet Care"
-        android:textColor="#FFFFFF"
+        android:text="Pet Care Reminder"
+        android:textColor="#4B3B47"
         android:textSize="18sp"
         android:layout_marginStart="12dp"
         android:layout_marginEnd="12dp"
@@ -45,12 +45,12 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
-    <!-- Profile Icon -->
+    <!-- Profile Icon with circle background -->
     <ImageView
         android:id="@+id/profile_icon"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:src="@drawable/ic_profile"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/ic_profile_circle"
         android:contentDescription="Profile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

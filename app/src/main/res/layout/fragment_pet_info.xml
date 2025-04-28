@@ -10,33 +10,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Header -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#FFD6D6"
-            android:orientation="horizontal"
-            android:padding="16dp">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:drawablePadding="8dp"
-                android:drawableStart="@drawable/ic_pet_placeholder"
-                android:text="Pet Care Reminder"
-                android:textColor="#8B4513"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <ImageView
-                android:id="@+id/notificationIcon"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:background="@drawable/circle_notification_background"
-                android:padding="4dp"
-                android:src="@drawable/ic_notifications" />
-        </LinearLayout>
 
         <!-- Pet Card -->
         <LinearLayout

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Google API authentication -->
+    <string name="google_app_id">1:144490824389:android:abe333a60e59161dff26ac</string>
+    <string name="google_api_key">AIzaSyAHzU3HMh8vB5vZGj21B-slwnRKjvXtqaY</string>
+    <string name="gcm_defaultSenderId">144490824389</string>
+    <string name="default_web_client_id">144490824389-web</string>
+    <string name="firebase_database_url">https://petcarekotlin-8c8ba.firebaseio.com</string>
+    <string name="google_crash_reporting_api_key">AIzaSyAHzU3HMh8vB5vZGj21B-slwnRKjvXtqaY</string>
+    <string name="google_storage_bucket">petcarekotlin-8c8ba.firebasestorage.app</string>
+    <string name="project_id">petcarekotlin-8c8ba</string>
+</resources> 
