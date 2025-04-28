@@ -10,6 +10,7 @@ data class FoodLogModel(
     val petId: String = "",
     val userId: String = "",
     val userName: String = "",
+    val userFullName: String = "",
     val amount: String = "",
     @ServerTimestamp val timestamp: Timestamp? = null,
     val createdAt: Date = Date()
@@ -19,6 +20,7 @@ data class FoodLogModel(
             "petId" to petId,
             "userId" to userId,
             "userName" to userName,
+            "userFullName" to userFullName,
             "amount" to amount,
             "createdAt" to createdAt
         )

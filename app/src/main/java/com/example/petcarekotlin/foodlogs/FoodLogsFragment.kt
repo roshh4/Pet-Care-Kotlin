@@ -49,7 +49,10 @@ class FoodLogsFragment : Fragment() {
         }
         
         // Initialize ViewModel
-        viewModel = ViewModelProvider(this)[FoodLogViewModel::class.java]
+        viewModel = ViewModelProvider(this).get(FoodLogViewModel::class.java)
+        
+        // Initialize user information
+        viewModel.initializeUserInfo(requireContext())
     }
 
     override fun onCreateView(

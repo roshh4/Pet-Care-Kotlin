@@ -14,6 +14,7 @@ class FoodLogRepository {
     private val db = FirebaseFirestore.getInstance()
     private val foodLogsCollection = db.collection("foodLogs")
     private val petsCollection = db.collection("pets")
+    private val usersCollection = db.collection("users")
     private val auth = FirebaseAuth.getInstance()
 
     // Get current user ID or return empty string if not logged in
@@ -25,9 +26,14 @@ class FoodLogRepository {
         return withContext(Dispatchers.IO) {
             try {
                 val userId = currentUserId
+                if (userId.isEmpty()) {
+                    return@withContext Result.failure(Exception("User not logged in"))
+                }
                 
-                // Get user display name (or use "You" as fallback)
-                val userName = auth.currentUser?.displayName ?: "You"
+                // Get the user's full name directly from the users collection
+                val userDoc = usersCollection.document(userId).get().await()
+                val userFullName = userDoc.getString("fullName") ?: "Unknown"
+                val userName = userDoc.getString("username") ?: auth.currentUser?.displayName ?: "You"
                 
                 // Get the next sequential ID
                 val nextId = getNextFoodLogId()
@@ -38,6 +44,7 @@ class FoodLogRepository {
                     petId = petId,
                     userId = userId,
                     userName = userName,
+                    userFullName = userFullName,
                     amount = amount,
                     createdAt = Date()
                 )
@@ -54,6 +61,63 @@ class FoodLogRepository {
                 Result.success(foodLog)
             } catch (e: Exception) {
                 Result.failure(e)
+            }
+        }
+    }
+    
+    // Add a food log with explicit user information
+    suspend fun addFoodLogWithUser(
+        petId: String, 
+        amount: String, 
+        userId: String, 
+        userName: String, 
+        userFullName: String
+    ): Result<FoodLogModel> {
+        return withContext(Dispatchers.IO) {
+            try {
+                // Get the next sequential ID
+                val nextId = getNextFoodLogId()
+                
+                // Create food log model with provided user info
+                val foodLog = FoodLogModel(
+                    id = nextId,
+                    petId = petId,
+                    userId = userId,
+                    userName = userName,
+                    userFullName = userFullName,
+                    amount = amount,
+                    createdAt = Date()
+                )
+                
+                // Add to Firestore with explicit ID
+                foodLogsCollection.document(nextId)
+                    .set(foodLog.toMap())
+                    .await()
+                
+                // Update the pet document to include this food log ID in its array
+                updatePetWithFoodLog(petId, nextId)
+                
+                // Return success with the log including the new ID
+                Result.success(foodLog)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
+    
+    // Get the user's full name from the users collection
+    suspend fun getUserFullName(userId: String): String? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val userDoc = usersCollection.document(userId).get().await()
+                if (userDoc.exists()) {
+                    // Return the fullName field, or username as fallback
+                    userDoc.getString("fullName") ?: userDoc.getString("username") ?: "Unknown"
+                } else {
+                    null
+                }
+            } catch (e: Exception) {
+                null
             }
         }
     }
@@ -143,11 +207,26 @@ class FoodLogRepository {
                     for (logId in foodLogIds) {
                         val docSnapshot = foodLogsCollection.document(logId).get().await()
                         if (docSnapshot.exists()) {
+                            val userId = docSnapshot.getString("userId") ?: ""
+                            
+                            // Get stored userFullName or fetch it if missing
+                            var userFullName = docSnapshot.getString("userFullName") ?: ""
+                            if (userFullName.isEmpty() && userId.isNotEmpty()) {
+                                userFullName = getUserFullName(userId) ?: ""
+                                
+                                // Update the document with the full name for future queries
+                                if (userFullName.isNotEmpty() && userFullName != "Unknown") {
+                                    foodLogsCollection.document(logId)
+                                        .update("userFullName", userFullName)
+                                }
+                            }
+                            
                             val foodLog = FoodLogModel(
                                 id = docSnapshot.id,
                                 petId = docSnapshot.getString("petId") ?: "",
-                                userId = docSnapshot.getString("userId") ?: "",
+                                userId = userId,
                                 userName = docSnapshot.getString("userName") ?: "",
+                                userFullName = userFullName,
                                 amount = docSnapshot.getString("amount") ?: "",
                                 timestamp = docSnapshot.getTimestamp("timestamp"),
                                 createdAt = docSnapshot.getDate("createdAt") ?: Date()
@@ -167,11 +246,26 @@ class FoodLogRepository {
                         .await()
                     
                     snapshot.documents.mapNotNull { doc ->
+                        val userId = doc.getString("userId") ?: ""
+                        
+                        // Get stored userFullName or fetch it if missing
+                        var userFullName = doc.getString("userFullName") ?: ""
+                        if (userFullName.isEmpty() && userId.isNotEmpty()) {
+                            userFullName = getUserFullName(userId) ?: ""
+                            
+                            // Update the document with the full name for future queries
+                            if (userFullName.isNotEmpty() && userFullName != "Unknown") {
+                                foodLogsCollection.document(doc.id)
+                                    .update("userFullName", userFullName)
+                            }
+                        }
+                        
                         val foodLog = FoodLogModel(
                             id = doc.id,
                             petId = doc.getString("petId") ?: "",
-                            userId = doc.getString("userId") ?: "",
+                            userId = userId,
                             userName = doc.getString("userName") ?: "",
+                            userFullName = userFullName,
                             amount = doc.getString("amount") ?: "",
                             timestamp = doc.getTimestamp("timestamp"),
                             createdAt = doc.getDate("createdAt") ?: Date()
