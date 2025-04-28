@@ -66,9 +66,8 @@ class LoginPageFragment : Fragment() {
         viewModel.loginResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is LoginResult.Success -> {
-                    // Display username and userId in a Toast message
+                    // Get the username/email from input
                     val usernameOrEmail = usernameEditText.text.toString().trim()
-                    Toast.makeText(context, "Login successful! Username: $usernameOrEmail, UserID: ${result.userId}", Toast.LENGTH_LONG).show()
                     
                     // Save the userId to shared preferences for use throughout the app
                     val sharedPrefs = requireActivity().getSharedPreferences("PetCarePrefs", 0)
@@ -113,7 +112,7 @@ class LoginPageFragment : Fragment() {
     
     private fun enableLoginButton() {
         loginButton.isEnabled = true
-        loginButton.text = "Login"
+        loginButton.text = "Log In"
     }
     
     override fun onDestroyView() {

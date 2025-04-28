@@ -1,74 +1,128 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="top|center_horizontal"
-    android:padding="24dp"
+    android:background="@color/login_background"
     android:fitsSystemWindows="true">
 
-    <!-- App Title -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Pet Care"
-        android:textSize="32sp"
-        android:textStyle="bold"
-        android:textColor="#8B4513"
-        android:layout_marginTop="48dp"
-        android:layout_marginBottom="48dp"/>
-
-    <!-- Username -->
-    <EditText
-        android:id="@+id/username"
+    <LinearLayout
+        android:id="@+id/login_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Username"
-        android:inputType="textPersonName"
-        android:padding="12dp"
-        android:background="@drawable/edit_text_background"
-        android:layout_marginBottom="16dp"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="80dp"
+        android:background="@drawable/login_card_background"
+        android:orientation="vertical"
+        android:padding="24dp">
 
-    <!-- Password -->
-    <EditText
-        android:id="@+id/password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Password"
-        android:inputType="textPassword"
-        android:padding="12dp"
-        android:background="@drawable/edit_text_background"
-        android:layout_marginBottom="32dp"/>
+        <!-- Welcome Text -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Welcome Back!"
+            android:textColor="@color/text_dark"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
-    <!-- Login Button -->
-    <Button
-        android:id="@+id/loginButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Login"
-        android:textColor="#FFFFFF"
-        android:background="#78AB46"
-        android:padding="12dp"/>
-        
+        <!-- Subheading -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp"
+            android:text="Sign in to manage your pet care"
+            android:textColor="@color/text_dark"
+            android:textSize="16sp" />
+
+        <!-- Email Label -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Username"
+            android:textColor="@color/text_dark"
+            android:textSize="16sp" />
+
+        <!-- Email Input -->
+        <EditText
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/edit_text_background"
+            android:inputType="textEmailAddress"
+            android:padding="12dp" />
+
+        <!-- Password Label -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Password"
+            android:textColor="@color/text_dark"
+            android:textSize="16sp" />
+
+        <!-- Password Input with visibility toggle -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp"
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="@color/login_button_pink"
+            app:boxBackgroundMode="none"
+            app:hintEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edit_text_background"
+                android:inputType="textPassword"
+                android:padding="12dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Login Button -->
+        <Button
+            android:id="@+id/loginButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#FFB6B6"
+            android:padding="12dp"
+            android:text="Log In"
+            android:textAllCaps="false"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+
     <!-- Sign Up Text -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="24dp">
-        
+        android:layout_below="@id/login_card"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New to this app? "
-            android:textSize="16sp"/>
-            
+            android:text="New to Pet Care? "
+            android:textColor="@color/text_dark"
+            android:textSize="16sp" />
+
         <TextView
             android:id="@+id/signupText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sign Up"
+            android:textColor="#FFB6B6"
             android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="#78AB46"/>
+            android:textStyle="bold" />
     </LinearLayout>
-</LinearLayout>
+
+</RelativeLayout>

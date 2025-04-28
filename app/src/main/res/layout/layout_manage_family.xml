@@ -1,225 +1,183 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#FFFFFF">
-    
-    <!-- Title bar with back button -->
-    <RelativeLayout
+    android:background="@android:color/white">
+
+    <!-- Header with title and buttons -->
+    <LinearLayout
+        android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:padding="16dp"
-        android:background="#F8F8F8">
-        
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
         <ImageView
             android:id="@+id/back_button"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_arrow_back"
-            android:layout_alignParentStart="true"
-            android:contentDescription="Back" />
-            
+            android:contentDescription="Back"/>
+
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="Manage Family"
-            android:textColor="#8B4513"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:layout_centerHorizontal="true" />
-            
+            android:layout_marginStart="16dp"/>
+
         <ImageView
             android:id="@+id/close_button"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_alignParentEnd="true"
             android:src="@drawable/ic_close"
-            android:contentDescription="Close" />
-    </RelativeLayout>
-    
-    <TextView
+            android:contentDescription="Close"/>
+    </LinearLayout>
+
+    <!-- Divider -->
+    <View
+        android:id="@+id/divider"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Family members with access to your pets"
-        android:textColor="#777777"
-        android:textSize="14sp"
-        android:padding="16dp" />
-    
-    <!-- Family member list -->
-    <ScrollView
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintTop_toBottomOf="@id/header"/>
+
+    <!-- No Family State -->
+    <LinearLayout
+        android:id="@+id/no_family_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
-        
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="16dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/divider"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:visibility="visible">
+
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/ic_family"
+            android:contentDescription="Family icon"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="You're not part of a family yet"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Create a new family or join an existing one to share pet care responsibilities with others."
+            android:textSize="14sp"
+            android:gravity="center"
+            android:layout_marginBottom="24dp"/>
+
+        <Button
+            android:id="@+id/create_family_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Create New Family"
+            android:layout_marginBottom="8dp"/>
+
+        <Button
+            android:id="@+id/join_family_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Join Existing Family"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+    </LinearLayout>
+
+    <!-- Family Content -->
+    <LinearLayout
+        android:id="@+id/family_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@id/divider"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <!-- Family Name Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-            
-            <!-- Owner -->
-            <LinearLayout
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#FFF3E0"
-                android:padding="16dp"
-                android:layout_marginBottom="8dp"
-                android:layout_marginHorizontal="16dp">
-                
-                <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@drawable/ic_profile"
-                    android:background="#B58863"
-                    android:padding="8dp"
-                    android:contentDescription="Owner" />
-                    
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginStart="16dp">
-                    
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Sarah Johnson"
-                        android:textColor="#000000"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-                        
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Owner"
-                        android:textColor="#8B4513"
-                        android:background="@drawable/owner_badge_background"
-                        android:paddingHorizontal="12dp"
-                        android:paddingVertical="4dp"
-                        android:textSize="12sp"
-                        android:layout_marginTop="4dp" />
-                </LinearLayout>
-            </LinearLayout>
-            
-            <!-- Member 1 -->
-            <LinearLayout
+                android:text="Family Name"
+                android:textSize="14sp"
+                android:textColor="@android:color/darker_gray"/>
+
+            <TextView
+                android:id="@+id/family_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#FFF3E0"
-                android:padding="16dp"
-                android:layout_marginBottom="8dp"
-                android:layout_marginHorizontal="16dp">
-                
-                <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@drawable/ic_profile"
-                    android:background="#B58863"
-                    android:padding="8dp"
-                    android:contentDescription="Member" />
-                    
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginStart="16dp">
-                    
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Mike Johnson"
-                        android:textColor="#000000"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-                        
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Member"
-                        android:textColor="#8B4513"
-                        android:background="@drawable/member_badge_background"
-                        android:paddingHorizontal="12dp"
-                        android:paddingVertical="4dp"
-                        android:textSize="12sp" 
-                        android:layout_marginTop="4dp" />
-                </LinearLayout>
-                
-                <ImageView
-                    android:id="@+id/member1_options"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_more_vert"
-                    android:layout_gravity="center_vertical"
-                    android:contentDescription="Options" />
-            </LinearLayout>
-            
-            <!-- Member 2 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#FFF3E0"
-                android:padding="16dp"
-                android:layout_marginBottom="16dp"
-                android:layout_marginHorizontal="16dp">
-                
-                <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@drawable/ic_profile"
-                    android:background="#B58863"
-                    android:padding="8dp"
-                    android:contentDescription="Member" />
-                    
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginStart="16dp">
-                    
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Emma Davis"
-                        android:textColor="#000000"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-                        
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Member"
-                        android:textColor="#8B4513"
-                        android:background="@drawable/member_badge_background"
-                        android:paddingHorizontal="12dp"
-                        android:paddingVertical="4dp"
-                        android:textSize="12sp"
-                        android:layout_marginTop="4dp" />
-                </LinearLayout>
-                
-                <ImageView
-                    android:id="@+id/member2_options"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_more_vert"
-                    android:layout_gravity="center_vertical"
-                    android:contentDescription="Options" />
-            </LinearLayout>
+                android:text="Smith Family"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                tools:text="Smith Family"/>
         </LinearLayout>
-    </ScrollView>
+
+        <!-- Members Section Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Family Members"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+
+            <Button
+                android:id="@+id/invite_new_member_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Invite"
+                style="@style/Widget.MaterialComponents.Button.TextButton"/>
+        </LinearLayout>
+
+        <!-- Members List -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/family_members_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            tools:listitem="@layout/item_family_member"
+            tools:itemCount="3"/>
+
+        <!-- Leave Family Button -->
+        <Button
+            android:id="@+id/leave_family_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Leave Family"
+            android:layout_margin="16dp"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+    </LinearLayout>
     
-    <!-- Invite New Member Button -->
-    <Button
-        android:id="@+id/invite_new_member_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Invite New Member"
-        android:drawableStart="@drawable/ic_add_person"
-        android:drawablePadding="8dp"
-        android:textColor="#FFFFFF"
-        android:background="#B58863"
-        android:layout_margin="16dp"
-        android:padding="12dp" />
-        
-</LinearLayout> 
+</androidx.constraintlayout.widget.ConstraintLayout> 

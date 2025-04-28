@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="12dp"
+    android:background="@drawable/rounded_item_background"
+    android:layout_marginBottom="8dp"
+    android:gravity="center_vertical">
+
+    <!-- Pet Icon -->
+    <ImageView
+        android:id="@+id/petIcon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_pet_placeholder"
+        android:contentDescription="Pet icon" />
+
+    <!-- Pet Name -->
+    <TextView
+        android:id="@+id/petName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="12dp"
+        android:textSize="16sp"
+        android:textColor="#333333"
+        tools:text="Buddy" />
+
+    <!-- Arrow Icon -->
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_arrow_right"
+        android:contentDescription="View pet details" />
+</LinearLayout> 

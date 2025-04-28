@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.concurrent.TimeUnit
+import android.content.Context
 
 data class PetInfo(
     val id: String = "",
@@ -59,8 +60,8 @@ class HomepageLogsFragment : Fragment() {
         // Show loading state
         showLoading(view)
         
-        // Fetch pets from Firestore
-        fetchPetsData()
+        // Get current user and fetch their pets
+        getCurrentUser()
     }
     
     private fun showLoading(view: View) {
@@ -71,80 +72,135 @@ class HomepageLogsFragment : Fragment() {
         view.findViewById<View>(R.id.vetAppointmentLayout)?.visibility = View.GONE
     }
     
-    private fun fetchPetsData() {
-        // For now, assuming we're working with family1 from our schema
-        // In a real app, you would get the current user's familyId from their profile
-        val familyId = "family1"
+    private fun getCurrentUser() {
+        // Get the current user from SharedPreferences (set during login)
+        val sharedPrefs = requireActivity().getSharedPreferences("PetCarePrefs", Context.MODE_PRIVATE)
+        val userId = sharedPrefs.getString("CURRENT_USER_ID", null)
+        val username = sharedPrefs.getString("CURRENT_USERNAME", null)
         
-        db.collection("pets")
-            .whereEqualTo("familyId", familyId)
+        if (userId.isNullOrEmpty()) {
+            Log.e(TAG, "No user ID found in SharedPreferences")
+            updateUIForNoPets()
+            return
+        }
+        
+        // Fetch user document to get pets array
+        db.collection("users")
+            .document(userId)
             .get()
-            .addOnSuccessListener { documents ->
-                if (documents.isEmpty) {
-                    // No pets found
-                    updateUIForNoPets()
-                } else {
-                    for (document in documents) {
-                        val petId = document.id
-                        val petName = document.getString("name") ?: ""
-                        val petBreed = document.getString("breed") ?: ""
-                        val petAge = document.getLong("age")?.toString() ?: "0"
-                        val foodRemaining = document.getLong("foodRemaining") ?: 0
-                        val dailyConsumption = document.getLong("dailyConsumption") ?: 1
-                        
-                        // Get vet info (stored as a map)
-                        val vetInfo = document.get("vetInfo") as? Map<String, Any>
-                        var vetDateTime = "No appointment scheduled"
-                        var vetDetails = ""
-                        
-                        if (vetInfo != null) {
-                            val nextAppointment = vetInfo["nextAppointment"] as? Timestamp
-                            val vetName = vetInfo["vetName"] as? String ?: ""
-                            val notes = vetInfo["notes"] as? String ?: ""
-                            
-                            if (nextAppointment != null) {
-                                val dateFormat = SimpleDateFormat("MMM dd, yyyy - h:mm a", Locale.getDefault())
-                                vetDateTime = dateFormat.format(nextAppointment.toDate())
-                            }
-                            
-                            vetDetails = "$vetName - $notes"
-                        }
-                        
-                        // Calculate estimated days left
-                        val daysLeft = if (dailyConsumption > 0) {
-                            (foodRemaining / dailyConsumption).toString()
-                        } else {
-                            "N/A"
-                        }
-                        
-                        // Create pet object
-                        val pet = PetInfo(
-                            id = petId,
-                            name = petName,
-                            breed = petBreed,
-                            age = "$petAge years old",
-                            foodRemaining = "${foodRemaining / 1000.0} kg",
-                            estimatedDaysLeft = "$daysLeft days left",
-                            vetDateTime = vetDateTime,
-                            vetDetails = vetDetails
-                        )
-                        
-                        // Add to our list
-                        petList.add(pet)
-                        
-                        // Get the most recent feeding log
-                        fetchLastFeeding(petId, petList.size - 1)
-                    }
+            .addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+                    // Get the pets array from user document
+                    val petsArray = document.get("pets") as? List<*>
                     
-                    // Update UI with the first pet
-                    if (petList.isNotEmpty()) {
-                        view?.let { updateUI(it) }
+                    if (petsArray.isNullOrEmpty()) {
+                        // User has no pets
+                        Log.d(TAG, "User has no pets")
+                        updateUIForNoPets()
+                    } else {
+                        // Get the first pet ID from the array
+                        val firstPetId = petsArray.filterIsInstance<String>().firstOrNull()
+                        
+                        if (firstPetId == null) {
+                            updateUIForNoPets()
+                            return@addOnSuccessListener
+                        }
+                        
+                        // Save current pet ID to SharedPreferences for use by other fragments
+                        val sharedPrefs = requireActivity().getSharedPreferences("PetCarePrefs", Context.MODE_PRIVATE)
+                        sharedPrefs.edit().putString("CURRENT_PET_ID", firstPetId).apply()
+                        
+                        // Fetch this pet's details
+                        fetchPetDetails(firstPetId)
                     }
+                } else {
+                    // User document doesn't exist
+                    Log.e(TAG, "User document not found")
+                    updateUIForNoPets()
                 }
             }
             .addOnFailureListener { exception ->
-                Log.e(TAG, "Error getting pets", exception)
-                Toast.makeText(context, "Error loading pets: ${exception.message}", Toast.LENGTH_SHORT).show()
+                Log.e(TAG, "Error getting user document", exception)
+                Toast.makeText(context, "Error loading user data: ${exception.message}", Toast.LENGTH_SHORT).show()
+                updateUIForNoPets()
+            }
+    }
+    
+    private fun fetchPetDetails(petId: String) {
+        db.collection("pets")
+            .document(petId)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+                    val petName = document.getString("name") ?: ""
+                    val petBreed = document.getString("breed") ?: ""
+                    
+                    // Properly handle age field that could be a number
+                    val petAge = when (val ageValue = document.get("age")) {
+                        is Long -> ageValue.toString()
+                        is Int -> ageValue.toString()
+                        is Double -> ageValue.toInt().toString()
+                        is String -> ageValue
+                        else -> "0"
+                    }
+                    
+                    val foodRemaining = document.getLong("foodRemaining") ?: 0
+                    val dailyConsumption = document.getLong("dailyConsumption") ?: 1
+                    
+                    // Get vet info (stored as a map)
+                    val vetInfo = document.get("vetInfo") as? Map<String, Any>
+                    var vetDateTime = "No appointment scheduled"
+                    var vetDetails = ""
+                    
+                    if (vetInfo != null) {
+                        val nextAppointment = vetInfo["nextAppointment"] as? Timestamp
+                        val vetName = vetInfo["vetName"] as? String ?: ""
+                        val notes = vetInfo["notes"] as? String ?: ""
+                        
+                        if (nextAppointment != null) {
+                            val dateFormat = SimpleDateFormat("MMM dd, yyyy - h:mm a", Locale.getDefault())
+                            vetDateTime = dateFormat.format(nextAppointment.toDate())
+                        }
+                        
+                        vetDetails = "$vetName - $notes"
+                    }
+                    
+                    // Calculate estimated days left
+                    val daysLeft = if (dailyConsumption > 0) {
+                        (foodRemaining / dailyConsumption).toString()
+                    } else {
+                        "N/A"
+                    }
+                    
+                    // Create pet object
+                    val pet = PetInfo(
+                        id = petId,
+                        name = petName,
+                        breed = petBreed,
+                        age = "$petAge years old",
+                        foodRemaining = "${foodRemaining / 1000.0} kg",
+                        estimatedDaysLeft = "$daysLeft days left",
+                        vetDateTime = vetDateTime,
+                        vetDetails = vetDetails
+                    )
+                    
+                    // Add to our list
+                    petList.add(pet)
+                    
+                    // Get the most recent feeding log
+                    fetchLastFeeding(petId, 0)
+                    
+                    // Update UI with this pet
+                    view?.let { updateUI(it) }
+                } else {
+                    // Pet document doesn't exist
+                    Log.e(TAG, "Pet document not found")
+                    updateUIForNoPets()
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error getting pet document", exception)
+                Toast.makeText(context, "Error loading pet data: ${exception.message}", Toast.LENGTH_SHORT).show()
                 updateUIForNoPets()
             }
     }
@@ -236,8 +292,16 @@ class HomepageLogsFragment : Fragment() {
             view.findViewById<View>(R.id.lastFedLayout)?.visibility = View.GONE
             view.findViewById<View>(R.id.foodRemainingLayout)?.visibility = View.GONE
             view.findViewById<View>(R.id.vetAppointmentLayout)?.visibility = View.GONE
+            
+            // Clear current pet ID in SharedPreferences
+            val sharedPrefs = requireActivity().getSharedPreferences("PetCarePrefs", Context.MODE_PRIVATE)
+            sharedPrefs.edit().remove("CURRENT_PET_ID").apply()
         } else {
             val pet = petList[currentIndex]
+            
+            // Save current pet ID to SharedPreferences
+            val sharedPrefs = requireActivity().getSharedPreferences("PetCarePrefs", Context.MODE_PRIVATE)
+            sharedPrefs.edit().putString("CURRENT_PET_ID", pet.id).apply()
             
             // Show all details
             view.findViewById<View>(R.id.lastFedLayout)?.visibility = View.VISIBLE
@@ -298,6 +362,10 @@ class HomepageLogsFragment : Fragment() {
             // Disable button to prevent multiple submissions
             addPetDialog?.findViewById<Button>(R.id.addPetButton)?.isEnabled = false
             
+            // Get the current user from SharedPreferences
+            val sharedPrefs = requireActivity().getSharedPreferences("PetCarePrefs", Context.MODE_PRIVATE)
+            val userId = sharedPrefs.getString("CURRENT_USER_ID", null) ?: "user1"
+            
             // Gather vet information
             val vetInfo = hashMapOf<String, Any>()
             val vetInfoText = vetInfoEditText?.text.toString().trim()
@@ -316,12 +384,13 @@ class HomepageLogsFragment : Fragment() {
                 "name" to petName,
                 "breed" to breed,
                 "age" to age,
-                "ownerId" to "user1", // In a real app, get the current user's ID
+                "ownerId" to userId,
                 "familyId" to "family1", // In a real app, get the current user's family ID
                 "foodRemaining" to 1000, // 1 kg default
                 "dailyConsumption" to 200, // 200g per day default
                 "vetInfo" to vetInfo,
-                "createdAt" to Timestamp.now()
+                "createdAt" to Timestamp.now(),
+                "foodLogs" to listOf<String>() // Initialize empty foodLogs array
             )
             
             // Add to Firestore
@@ -329,11 +398,22 @@ class HomepageLogsFragment : Fragment() {
                 .add(newPet)
                 .addOnSuccessListener { documentReference ->
                     Log.d(TAG, "Pet added with ID: ${documentReference.id}")
-                    Toast.makeText(context, "Pet added successfully", Toast.LENGTH_SHORT).show()
+                    
+                    // Add this pet to the user's pets array
+                    val petId = documentReference.id
+                    db.collection("users").document(userId)
+                        .update("pets", com.google.firebase.firestore.FieldValue.arrayUnion(petId))
+                        .addOnSuccessListener {
+                            Toast.makeText(context, "Pet added successfully", Toast.LENGTH_SHORT).show()
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e(TAG, "Error adding pet to user", e)
+                            Toast.makeText(context, "Pet created but not linked to user: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
                     
                     // Reload pets data
                     petList.clear()
-                    fetchPetsData()
+                    getCurrentUser()
                     
                     // Dismiss the dialog
                     addPetDialog?.dismiss()
@@ -355,5 +435,13 @@ class HomepageLogsFragment : Fragment() {
         super.onDestroyView()
         addPetDialog?.dismiss()
         addPetDialog = null
+    }
+
+    fun getCurrentPetId(): String? {
+        return if (petList.isNotEmpty() && currentIndex < petList.size) {
+            petList[currentIndex].id
+        } else {
+            null
+        }
     }
 } 

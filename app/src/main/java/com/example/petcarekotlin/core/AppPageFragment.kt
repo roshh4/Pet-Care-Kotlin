@@ -26,6 +26,8 @@ import com.example.petcarekotlin.UserProfile.UserProfileFragment
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.FragmentManager
 import android.util.Log
+import android.widget.Toast
+import com.example.petcarekotlin.home.HomepageLogsFragment
 
 class AppPageFragment : Fragment(), FooterFragment.OnFooterNavigationListener {
     
@@ -239,6 +241,8 @@ class AppPageFragment : Fragment(), FooterFragment.OnFooterNavigationListener {
                 headerFragment.setTitle("Food Logs")
                 headerFragment.showBackButton(true)
                 currentFragmentTag = "foodlogs"
+                
+                // We'll let FoodLogsFragment handle getting the current pet ID
                 FoodLogsFragment()
             }
             else -> null

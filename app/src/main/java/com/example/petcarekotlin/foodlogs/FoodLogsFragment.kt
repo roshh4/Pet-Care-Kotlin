@@ -1,17 +1,21 @@
 package com.example.petcarekotlin.foodlogs
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.petcarekotlin.R
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -21,15 +25,32 @@ class FoodLogsFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var feedNowButton: Button
+    private lateinit var loadingProgressBar: ProgressBar
+    private lateinit var emptyStateView: TextView
     private var bottomSheetDialog: BottomSheetDialog? = null
+    
+    private lateinit var viewModel: FoodLogViewModel
+    private val foodLogAdapter = FoodLogAdapter(mutableListOf())
+    
+    private var petId: String? = null
 
-    private val foodLogs = mutableListOf(
-        FoodLog("Today, 8:30 AM", "Mike", "200g"),
-        FoodLog("Yesterday, 6:45 PM", "Sarah", "200g"),
-        FoodLog("Yesterday, 8:15 AM", "Mike", "200g"),
-        FoodLog("Apr 14, 7:00 PM", "Emma", "200g"),
-        FoodLog("Apr 14, 8:30 AM", "Sarah", "200g")
-    )
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        
+        // Get pet ID from arguments
+        arguments?.let {
+            petId = it.getString(ARG_PET_ID)
+        }
+        
+        // If no pet ID in arguments, check shared preferences
+        if (petId == null) {
+            val sharedPrefs = requireActivity().getSharedPreferences("PetCarePrefs", Context.MODE_PRIVATE)
+            petId = sharedPrefs.getString("CURRENT_PET_ID", null)
+        }
+        
+        // Initialize ViewModel
+        viewModel = ViewModelProvider(this)[FoodLogViewModel::class.java]
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,18 +60,71 @@ class FoodLogsFragment : Fragment() {
 
         recyclerView = view.findViewById(R.id.recyclerViewLogs)
         feedNowButton = view.findViewById(R.id.feedNowButton)
+        loadingProgressBar = view.findViewById(R.id.loadingProgressBar)
+        emptyStateView = view.findViewById(R.id.emptyStateTextView)
 
+        // Set up RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.adapter = FoodLogAdapter(foodLogs)
+        recyclerView.adapter = foodLogAdapter
 
+        // Set up Feed Now button
         feedNowButton.setOnClickListener {
             showRecordFeedingBottomSheet()
         }
 
         return view
     }
+    
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        
+        // Observe ViewModel data
+        viewModel.foodLogs.observe(viewLifecycleOwner) { foodLogModels ->
+            if (foodLogModels.isEmpty()) {
+                showEmptyState()
+            } else {
+                showLogs()
+                
+                // Convert models to UI models and update adapter
+                val uiLogs = foodLogModels.map { model -> 
+                    viewModel.convertToUiModel(model)
+                }
+                
+                // Update the adapter with new data
+                foodLogAdapter.updateLogs(uiLogs)
+            }
+        }
+        
+        // Observe loading state
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            loadingProgressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
+        
+        // Observe error messages
+        viewModel.errorMessage.observe(viewLifecycleOwner) { errorMsg ->
+            errorMsg?.let {
+                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            }
+        }
+        
+        // Load food logs if we have a pet ID
+        petId?.let { id ->
+            viewModel.loadFoodLogs(id)
+        } ?: run {
+            // No pet ID provided, show error state
+            showEmptyState()
+            emptyStateView.text = "No pet selected. Please select a pet from the home screen."
+            Toast.makeText(context, "No pet selected", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     private fun showRecordFeedingBottomSheet() {
+        // If no pet ID is available, show an error
+        if (petId == null) {
+            Toast.makeText(context, "No pet selected. Please select a pet first.", Toast.LENGTH_SHORT).show()
+            return
+        }
+        
         // Create the bottom sheet dialog
         bottomSheetDialog = BottomSheetDialog(requireContext())
         val bottomSheetView = layoutInflater.inflate(R.layout.bottom_sheet_record_feeding, null)
@@ -73,7 +147,6 @@ class FoodLogsFragment : Fragment() {
 
         // Set up save button
         bottomSheetView.findViewById<Button>(R.id.saveButton).setOnClickListener {
-            val time = timeEditText.text.toString()
             val amount = bottomSheetView.findViewById<EditText>(R.id.amountEditText).text.toString()
 
             if (amount.isEmpty()) {
@@ -81,20 +154,29 @@ class FoodLogsFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            // Add new log entry to the top of the list
-            val currentTime = SimpleDateFormat("MMM dd, h:mm a", Locale.getDefault()).format(Date())
-            foodLogs.add(0, FoodLog("Today, $time", "You", "${amount}g"))
-            recyclerView.adapter?.notifyItemInserted(0)
-            recyclerView.scrollToPosition(0)
-
-            // Dismiss the bottom sheet
-            bottomSheetDialog?.dismiss()
-
-            // Show success message
-            Toast.makeText(context, "Feeding recorded successfully", Toast.LENGTH_SHORT).show()
+            // Save to Firestore via ViewModel
+            petId?.let { id ->
+                viewModel.addFoodLog(id, "${amount}g")
+                
+                // Dismiss the bottom sheet
+                bottomSheetDialog?.dismiss()
+                
+                // Show temporary success message while data is being fetched
+                Toast.makeText(context, "Saving feeding record...", Toast.LENGTH_SHORT).show()
+            }
         }
 
         bottomSheetDialog?.show()
+    }
+    
+    private fun showEmptyState() {
+        recyclerView.visibility = View.GONE
+        emptyStateView.visibility = View.VISIBLE
+    }
+    
+    private fun showLogs() {
+        recyclerView.visibility = View.VISIBLE
+        emptyStateView.visibility = View.GONE
     }
 
     override fun onDestroyView() {
@@ -102,10 +184,16 @@ class FoodLogsFragment : Fragment() {
         bottomSheetDialog?.dismiss()
         bottomSheetDialog = null
     }
-}
-
-data class FoodLog(
-    val time: String,
-    val author: String,
-    val amount: String
-) 
+    
+    companion object {
+        private const val ARG_PET_ID = "pet_id"
+        
+        @JvmStatic
+        fun newInstance(petId: String) =
+            FoodLogsFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_PET_ID, petId)
+                }
+            }
+    }
+} 

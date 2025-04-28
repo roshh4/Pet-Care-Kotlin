@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+    
+    <!-- Background -->
+    <path
+        android:fillColor="#F5F5F5"
+        android:pathData="M0,0h200v200h-200z" />
+    
+    <!-- QR Code pattern -->
+    <path
+        android:fillColor="#333333"
+        android:pathData="M40,40h40v40h-40z" />
+    <path
+        android:fillColor="#333333"
+        android:pathData="M50,50h20v20h-20z M40,120h40v40h-40z M50,130h20v20h-20z M120,40h40v40h-40z M130,50h20v20h-20z" />
+    
+    <!-- Middle pattern -->
+    <path
+        android:fillColor="#333333"
+        android:pathData="M90,90h20v20h-20z M120,90h20v20h-20z M90,120h20v20h-20z M70,90h10v10h-10z M120,120h10v10h-10z" />
+    
+    <!-- Random dots -->
+    <path
+        android:fillColor="#333333"
+        android:pathData="M110,150h10v10h-10z M130,90h10v10h-10z M90,70h10v10h-10z M150,110h10v10h-10z M150,130h10v10h-10z M70,150h10v10h-10z" />
+</vector> 

@@ -57,4 +57,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    // ZXing for QR code generation
+    implementation("com.google.zxing:core:3.5.2")
 }

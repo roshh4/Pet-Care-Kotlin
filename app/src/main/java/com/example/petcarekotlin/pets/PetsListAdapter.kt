@@ -29,8 +29,44 @@ class PetsListAdapter(
     override fun onBindViewHolder(holder: PetViewHolder, position: Int) {
         val pet = petsList[position]
         
-        holder.petName.text = pet.name
-        holder.petDetails.text = "${pet.breed}, ${pet.age} years"
+        // Display pet name or fallback to "Unnamed Pet" if empty
+        holder.petName.text = if (pet.name.isNotBlank()) pet.name else "Unnamed Pet"
+        
+        // Build and display pet details
+        val details = buildString {
+            // Add species if available
+            if (pet.species.isNotBlank() && pet.species != "Unknown") {
+                append(pet.species)
+                
+                // Add breed if available and not Unknown
+                if (pet.breed.isNotBlank() && pet.breed != "Unknown") {
+                    append(" (${pet.breed})")
+                }
+                
+                // Add comma before age if both species and age exist
+                if (pet.age.isNotBlank() && pet.age != "0") {
+                    append(", ")
+                }
+            }
+            
+            // Add age if available
+            if (pet.age.isNotBlank() && pet.age != "0") {
+                append("${pet.age} years")
+            }
+            
+            // Add weight if available
+            if (pet.weight.isNotBlank() && pet.weight != "0") {
+                if (length > 0) append(", ")
+                append("${pet.weight} kg")
+            }
+            
+            // Default text if no details available
+            if (isEmpty()) {
+                append("No details available")
+            }
+        }
+        
+        holder.petDetails.text = details
         
         // Set a default pet image
         holder.petImage.setImageResource(R.drawable.ic_pet_placeholder)

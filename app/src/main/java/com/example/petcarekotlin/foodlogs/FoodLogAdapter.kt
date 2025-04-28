@@ -7,7 +7,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.petcarekotlin.R
 
-class FoodLogAdapter(private val logs: List<FoodLog>) :
+// Keep the data class here
+data class FoodLog(
+    val time: String,
+    val author: String,
+    val amount: String
+)
+
+class FoodLogAdapter(private val logs: MutableList<FoodLog>) :
     RecyclerView.Adapter<FoodLogAdapter.FoodLogViewHolder>() {
 
     inner class FoodLogViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -30,4 +37,11 @@ class FoodLogAdapter(private val logs: List<FoodLog>) :
     }
 
     override fun getItemCount() = logs.size
+    
+    // Update logs with new data
+    fun updateLogs(newLogs: List<FoodLog>) {
+        logs.clear()
+        logs.addAll(newLogs)
+        notifyDataSetChanged()
+    }
 } 

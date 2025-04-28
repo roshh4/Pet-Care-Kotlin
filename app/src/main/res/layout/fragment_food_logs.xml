@@ -47,13 +47,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="No feeding logs found"
+            android:text="No feeding records found"
             android:textSize="16sp"
-            android:textColor="#666666"
             android:visibility="gone"/>
 
         <ProgressBar
-            android:id="@+id/loadingIndicator"
+            android:id="@+id/loadingProgressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

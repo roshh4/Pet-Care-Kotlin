@@ -126,7 +126,16 @@ class UserProfileFragment : Fragment() {
     }
     
     private fun tryLoadPetsFromUserDocument() {
-        db.collection("users").document(userId)
+        // Get the current user ID from shared preferences
+        val sharedPrefs = requireActivity().getSharedPreferences("PetCarePrefs", 0)
+        val storedUserId = sharedPrefs.getString("CURRENT_USER_ID", null)
+        
+        // Use stored user ID if available, otherwise fall back to the default
+        val userIdToUse = storedUserId ?: userId
+        
+        Toast.makeText(context, "Fetching pets for user: $userIdToUse", Toast.LENGTH_SHORT).show()
+        
+        db.collection("users").document(userIdToUse)
             .get()
             .addOnSuccessListener { userDoc ->
                 if (userDoc.exists()) {
@@ -137,7 +146,7 @@ class UserProfileFragment : Fragment() {
                         // We have pet IDs, try to load them
                         val stringPetIds = petIds.mapNotNull { it as? String }
                         if (stringPetIds.isNotEmpty()) {
-                            Toast.makeText(context, "Found ${stringPetIds.size} pets", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Found ${stringPetIds.size} pets in user document", Toast.LENGTH_SHORT).show()
                             // Load pets data from the pet documents
                             loadPetsData(stringPetIds)
                         } else {
@@ -148,10 +157,12 @@ class UserProfileFragment : Fragment() {
                         loadPetsFromUserField(userDoc)
                     }
                 } else {
+                    Toast.makeText(context, "User document not found: $userIdToUse", Toast.LENGTH_SHORT).show()
                     showEmptyState()
                 }
             }
-            .addOnFailureListener {
+            .addOnFailureListener { e ->
+                Toast.makeText(context, "Error loading user: ${e.message}", Toast.LENGTH_SHORT).show()
                 showEmptyState()
             }
     }
@@ -163,7 +174,7 @@ class UserProfileFragment : Fragment() {
         }
         
         // Debug log
-        Toast.makeText(context, "Trying to load pets: ${petIds.joinToString()}", Toast.LENGTH_LONG).show()
+        Toast.makeText(context, "Trying to load pets: ${petIds.joinToString()}", Toast.LENGTH_SHORT).show()
         
         val petsList = mutableListOf<PetModel>()
         var completedQueries = 0
@@ -172,22 +183,15 @@ class UserProfileFragment : Fragment() {
             db.collection("pets").document(petId)
                 .get()
                 .addOnSuccessListener { petDoc ->
-                    // Log the result for each pet
-                    if (petDoc.exists()) {
-                        Toast.makeText(context, "Pet found: ${petDoc.id}", Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(context, "Pet not found: $petId", Toast.LENGTH_SHORT).show()
-                    }
-                    
                     if (petDoc.exists()) {
                         try {
                             val pet = PetModel(
                                 petId = petDoc.id,
-                                name = petDoc.getString("name") ?: "",
-                                species = petDoc.getString("species") ?: "",
-                                breed = petDoc.getString("breed") ?: "",
-                                age = petDoc.getString("age") ?: "",
-                                weight = petDoc.getString("weight") ?: "",
+                                name = petDoc.getString("name") ?: "Unknown Pet",
+                                species = petDoc.getString("species") ?: "Unknown",
+                                breed = petDoc.getString("breed") ?: "Unknown",
+                                age = petDoc.getString("age") ?: "0",
+                                weight = petDoc.getString("weight") ?: "0",
                                 ownerId = petDoc.getString("ownerId") ?: userId,
                                 photoUrl = petDoc.getString("photoUrl"),
                                 createdAt = petDoc.getLong("createdAt") ?: System.currentTimeMillis(),
@@ -198,13 +202,13 @@ class UserProfileFragment : Fragment() {
                             // If there's an error parsing the pet data, create a basic placeholder
                             val pet = PetModel(
                                 petId = petDoc.id,
-                                name = petDoc.id,
+                                name = petDoc.getString("name") ?: petDoc.id,
                                 ownerId = userId
                             )
                             petsList.add(pet)
                         }
                     } else {
-                        // If pet document doesn't exist, let's create it with default values
+                        // If pet document doesn't exist, let's create a placeholder
                         val newPet = PetModel(
                             petId = petId,
                             name = "Pet $petId",
@@ -217,9 +221,6 @@ class UserProfileFragment : Fragment() {
                             updatedAt = System.currentTimeMillis()
                         )
                         petsList.add(newPet)
-                        
-                        // Create the pet document in Firestore
-                        createPetDocument(newPet)
                     }
                     
                     completedQueries++
@@ -252,30 +253,6 @@ class UserProfileFragment : Fragment() {
                     }
                 }
         }
-    }
-    
-    private fun createPetDocument(pet: PetModel) {
-        // Create a map of pet data
-        val petData = hashMapOf(
-            "name" to pet.name,
-            "species" to pet.species,
-            "breed" to pet.breed,
-            "age" to pet.age,
-            "weight" to pet.weight,
-            "ownerId" to userId,
-            "createdAt" to System.currentTimeMillis(),
-            "lastUpdated" to System.currentTimeMillis()
-        )
-        
-        // Create the pet document in Firestore with the exact petId
-        db.collection("pets").document(pet.petId)
-            .set(petData)
-            .addOnSuccessListener {
-                Toast.makeText(context, "Created pet document: ${pet.petId}", Toast.LENGTH_SHORT).show()
-            }
-            .addOnFailureListener { e ->
-                Toast.makeText(context, "Failed to create pet document: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
     }
     
     private fun loadPetsFromUserField(userDoc: com.google.firebase.firestore.DocumentSnapshot) {
