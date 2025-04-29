@@ -32,7 +32,6 @@ class ManageFamilyFragment : Fragment() {
     private var joinFamilyDialog: BottomSheetDialog? = null
     
     private lateinit var membersRecyclerView: RecyclerView
-    private lateinit var familyNameText: TextView
     private lateinit var noFamilyView: View
     private lateinit var familyContentView: View
     private lateinit var createFamilyButton: Button
@@ -50,7 +49,6 @@ class ManageFamilyFragment : Fragment() {
         
         // Initialize views
         membersRecyclerView = view.findViewById(R.id.family_members_list)
-        familyNameText = view.findViewById(R.id.family_name)
         noFamilyView = view.findViewById(R.id.no_family_layout)
         familyContentView = view.findViewById(R.id.family_content)
         createFamilyButton = view.findViewById(R.id.create_family_button)
@@ -150,9 +148,6 @@ class ManageFamilyFragment : Fragment() {
     private fun displayFamilyInfo(family: FamilyModel) {
         currentFamilyId = family.familyId
         
-        // Update UI with family data
-        familyNameText.text = family.name
-        
         // Show family content
         noFamilyView.visibility = View.GONE
         familyContentView.visibility = View.VISIBLE
@@ -177,12 +172,12 @@ class ManageFamilyFragment : Fragment() {
                         val userDoc = repository.getUserById(memberId)
                         val isAdmin = family.admins.contains(memberId)
                         val isOwner = family.createdBy == memberId
-                        val username = userDoc.getString("username") ?: "Unknown User"
+                        val fullName = userDoc.getString("fullName") ?: "Unknown User"
                         val email = userDoc.getString("email") ?: ""
                         
                         membersList.add(MemberInfo(
                             userId = memberId,
-                            username = username,
+                            username = fullName,
                             email = email,
                             isAdmin = isAdmin,
                             isOwner = isOwner,
@@ -641,7 +636,6 @@ class ManageFamilyFragment : Fragment() {
                 
                 // Display family info
                 val familyName = familyDoc.getString("name") ?: "My Family"
-                familyNameText.text = familyName
                 currentFamilyId = familyId
                 
                 // Show family content

@@ -1,53 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#fff8f0"
     android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <!-- Header Fragment -->
-        <FrameLayout
-            android:id="@+id/header_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <!-- Pet Info Fragment -->
-        <FrameLayout
+        <androidx.cardview.widget.CardView
             android:id="@+id/pet_info_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp" />
-
-        <!-- Weight Info Fragment -->
-        <FrameLayout
-            android:id="@+id/weight_info_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp" />
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="@android:color/white"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeColor="#fadadd"
+            app:strokeWidth="1dp" />
 
         <!-- Gallery Fragment -->
-        <FrameLayout
+        <androidx.cardview.widget.CardView
             android:id="@+id/gallery_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp" />
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="@android:color/white"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeColor="#fadadd"
+            app:strokeWidth="1dp" />
 
         <!-- Vet Info Fragment -->
-        <FrameLayout
+        <androidx.cardview.widget.CardView
             android:id="@+id/vet_info_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp" />
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="@android:color/white"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeColor="#fadadd"
+            app:strokeWidth="1dp" />
 
-        <!-- Footer Fragment -->
-        <FrameLayout
-            android:id="@+id/footer_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp" />
 
     </LinearLayout>
 </ScrollView>

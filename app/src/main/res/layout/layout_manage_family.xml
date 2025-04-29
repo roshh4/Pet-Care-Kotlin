@@ -93,6 +93,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Create New Family"
+            android:backgroundTint="@color/login_button_pink"
             android:layout_marginBottom="8dp"/>
 
         <Button
@@ -100,6 +101,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Join Existing Family"
+            android:textColor="@color/login_button_pink"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
     </LinearLayout>
 
@@ -123,18 +125,10 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Family Name"
+                android:text="Family Members with access to your Pet"
                 android:textSize="14sp"
                 android:textColor="@android:color/darker_gray"/>
 
-            <TextView
-                android:id="@+id/family_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Smith Family"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                tools:text="Smith Family"/>
         </LinearLayout>
 
         <!-- Members Section Header -->
@@ -158,6 +152,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Invite"
+                android:textColor="@color/login_button_pink"
                 style="@style/Widget.MaterialComponents.Button.TextButton"/>
         </LinearLayout>
 
@@ -176,6 +171,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Leave Family"
+            android:textColor="@color/login_button_pink"
             android:layout_margin="16dp"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
     </LinearLayout>

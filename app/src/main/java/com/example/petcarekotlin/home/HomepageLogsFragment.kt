@@ -78,10 +78,25 @@ class HomepageLogsFragment : Fragment() {
     }
     
     private fun getCurrentUser() {
+        // Check if fragment is attached
+        if (!isAdded) {
+            updateUIForNoPets()
+            return
+        }
+
         // Get the current user from SharedPreferences (set during login)
-        val sharedPrefs = requireActivity().getSharedPreferences("PetCarePrefs", Context.MODE_PRIVATE)
-        val userId = sharedPrefs.getString("CURRENT_USER_ID", null)
-        val username = sharedPrefs.getString("CURRENT_USERNAME", null)
+        val userId: String?
+        val username: String?
+        
+        try {
+            val sharedPrefs = requireActivity().getSharedPreferences("PetCarePrefs", Context.MODE_PRIVATE)
+            userId = sharedPrefs.getString("CURRENT_USER_ID", null)
+            username = sharedPrefs.getString("CURRENT_USERNAME", null)
+        } catch (e: IllegalStateException) {
+            Log.e(TAG, "Fragment not attached to activity", e)
+            updateUIForNoPets()
+            return
+        }
         
         if (userId.isNullOrEmpty()) {
             Log.e(TAG, "No user ID found in SharedPreferences")
@@ -94,6 +109,11 @@ class HomepageLogsFragment : Fragment() {
             .document(userId)
             .get()
             .addOnSuccessListener { document ->
+                // Check if fragment is still attached
+                if (!isAdded) {
+                    return@addOnSuccessListener
+                }
+
                 if (document != null && document.exists()) {
                     // Get the pets array from user document
                     val petsArray = document.get("pets") as? List<*>
@@ -111,8 +131,12 @@ class HomepageLogsFragment : Fragment() {
                         // Set current pet ID to SharedPreferences for use by other fragments
                         val firstPetId = petsArray.filterIsInstance<String>().firstOrNull()
                         if (firstPetId != null) {
-                            val sharedPrefs = requireActivity().getSharedPreferences("PetCarePrefs", Context.MODE_PRIVATE)
-                            sharedPrefs.edit().putString("CURRENT_PET_ID", firstPetId).apply()
+                            try {
+                                val sharedPrefs = requireActivity().getSharedPreferences("PetCarePrefs", Context.MODE_PRIVATE)
+                                sharedPrefs.edit().putString("CURRENT_PET_ID", firstPetId).apply()
+                            } catch (e: IllegalStateException) {
+                                Log.e(TAG, "Could not save current pet ID", e)
+                            }
                         }
                     }
                 } else {
@@ -122,17 +146,34 @@ class HomepageLogsFragment : Fragment() {
                 }
             }
             .addOnFailureListener { exception ->
+                // Check if fragment is still attached
+                if (!isAdded) {
+                    return@addOnFailureListener
+                }
+
                 Log.e(TAG, "Error getting user document", exception)
-                Toast.makeText(context, "Error loading user data: ${exception.message}", Toast.LENGTH_SHORT).show()
+                context?.let { ctx ->
+                    Toast.makeText(ctx, "Error loading user data: ${exception.message}", Toast.LENGTH_SHORT).show()
+                }
                 updateUIForNoPets()
             }
     }
     
     private fun fetchPetDetails(petId: String) {
+        // Check if fragment is attached
+        if (!isAdded) {
+            return
+        }
+
         db.collection("pets")
             .document(petId)
             .get()
             .addOnSuccessListener { document ->
+                // Check if fragment is still attached
+                if (!isAdded) {
+                    return@addOnSuccessListener
+                }
+
                 if (document != null && document.exists()) {
                     val petName = document.getString("name") ?: ""
                     val petBreed = document.getString("breed") ?: ""
@@ -206,8 +247,15 @@ class HomepageLogsFragment : Fragment() {
                 }
             }
             .addOnFailureListener { exception ->
+                // Check if fragment is still attached
+                if (!isAdded) {
+                    return@addOnFailureListener
+                }
+
                 Log.e(TAG, "Error getting pet document", exception)
-                Toast.makeText(context, "Error loading pet data: ${exception.message}", Toast.LENGTH_SHORT).show()
+                context?.let { ctx ->
+                    Toast.makeText(ctx, "Error loading pet data: ${exception.message}", Toast.LENGTH_SHORT).show()
+                }
                 if (petList.isEmpty()) {
                     updateUIForNoPets()
                 }

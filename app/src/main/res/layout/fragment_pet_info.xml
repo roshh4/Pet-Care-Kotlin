@@ -8,212 +8,160 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:padding="16dp">
 
+        <!-- Profile Photo Section -->
+        <FrameLayout
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/circle_background_pink">
 
+            <ImageView
+                android:id="@+id/profileImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="24dp"
+                android:src="@drawable/ic_paw"
+                app:tint="#ffb6b6" />
 
-        <!-- Pet Card -->
-        <LinearLayout
+            <ImageView
+                android:id="@+id/editPhotoButton"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="bottom|end"
+                android:background="@drawable/circle_background_upload"
+                android:padding="8dp"
+                android:src="@drawable/ic_upload"
+                app:tint="@android:color/white" />
+        </FrameLayout>
+
+        <!-- Headers -->
+        <TextView
+            android:id="@+id/petNameHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:background="@drawable/white_rounded_background"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:layout_marginBottom="4dp"
+            android:gravity="center"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#4B3B47" />
 
-            <!-- Pet Image and Name -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:layout_marginBottom="16dp">
+        <TextView
+            android:id="@+id/petDetailsHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:textColor="#78666f" />
 
-                <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp">
+        <!-- Pet Name -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:hint="Pet Name"
+            android:textColorHint="#4B3B47"
+            app:boxStrokeColor="#fadadd"
+            app:hintTextColor="#4B3B47">
 
-                    <ImageView
-                        android:id="@+id/profileImage"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:background="#FFE6E6"
-                        android:padding="16dp"
-                        android:src="@drawable/ic_pet_placeholder" />
-
-                    <ImageView
-                        android:id="@+id/editPhotoButton"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_gravity="bottom|end"
-                        android:background="@drawable/circle_edit_background"
-                        android:padding="6dp"
-                        android:src="@drawable/ic_camera" />
-                </FrameLayout>
-
-                <TextView
-                    android:id="@+id/petNameHeader"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Buddy"
-                    android:textColor="#333333"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/petDetailsHeader"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Golden Retriever • 3 years old"
-                    android:textColor="#666666"
-                    android:textSize="16sp" />
-            </LinearLayout>
-
-            <!-- Pet Name -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Pet Name"
-                android:textColor="#666666"
-                android:textSize="16sp"
-                android:layout_marginBottom="4dp" />
-
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/petNameEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/edit_text_background"
-                android:inputType="text"
-                android:padding="12dp"
-                android:text="Buddy"
-                android:layout_marginBottom="16dp" />
+                android:textColor="#000000" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Species and Breed in a row -->
-            <LinearLayout
-                android:layout_width="match_parent"
+        <!-- Species and Breed Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="16dp">
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:hint="Species"
+                android:textColorHint="#4B3B47"
+                app:boxStrokeColor="#fadadd"
+                app:hintTextColor="#4B3B47">
 
-                <LinearLayout
-                    android:layout_width="0dp"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/speciesEditText"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginEnd="8dp">
+                    android:textColor="#000000" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Species"
-                        android:textColor="#666666"
-                        android:textSize="16sp"
-                        android:layout_marginBottom="4dp" />
-
-                    <EditText
-                        android:id="@+id/speciesEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/edit_text_background"
-                        android:inputType="text"
-                        android:padding="12dp"
-                        android:text="Dog" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginStart="8dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Breed"
-                        android:textColor="#666666"
-                        android:textSize="16sp"
-                        android:layout_marginBottom="4dp" />
-
-                    <EditText
-                        android:id="@+id/breedEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/edit_text_background"
-                        android:inputType="text"
-                        android:padding="12dp"
-                        android:text="Golden Retriever" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- Age and Weight in a row -->
-            <LinearLayout
-                android:layout_width="match_parent"
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="16dp">
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:hint="Breed"
+                android:textColorHint="#4B3B47"
+                app:boxStrokeColor="#fadadd"
+                app:hintTextColor="#4B3B47">
 
-                <LinearLayout
-                    android:layout_width="0dp"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/breedEditText"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginEnd="8dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Age (years)"
-                        android:textColor="#666666"
-                        android:textSize="16sp"
-                        android:layout_marginBottom="4dp" />
-
-                    <EditText
-                        android:id="@+id/ageEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/edit_text_background"
-                        android:inputType="number"
-                        android:padding="12dp"
-                        android:text="3" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginStart="8dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Weight (kg)"
-                        android:textColor="#666666"
-                        android:textSize="16sp"
-                        android:layout_marginBottom="4dp" />
-
-                    <EditText
-                        android:id="@+id/weightEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/edit_text_background"
-                        android:inputType="numberDecimal"
-                        android:padding="12dp"
-                        android:text="28.5" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- Save Button -->
-            <Button
-                android:id="@+id/saveButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/button_primary"
-                android:text="Save Changes"
-                android:textColor="#FFFFFF" />
+                    android:textColor="#000000" />
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
+
+        <!-- Age -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:hint="Age (years)"
+            android:textColorHint="#4B3B47"
+            app:boxStrokeColor="#fadadd"
+            app:hintTextColor="#4B3B47">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/ageEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:textColor="#000000" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Weight -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:hint="Weight (kg)"
+            android:textColorHint="#4B3B47"
+            app:boxStrokeColor="#fadadd"
+            app:hintTextColor="#4B3B47">
+
+            <EditText
+                android:id="@+id/weightEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:textColor="#000000" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Save Button -->
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Save Changes"
+            android:backgroundTint="@color/login_button_pink"
+            android:textColor="#FFFFFF" />
     </LinearLayout>
 </ScrollView>

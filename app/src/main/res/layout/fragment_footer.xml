@@ -6,8 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
-    android:background="?android:attr/windowBackground"
+    android:background="@color/header_background"
     app:labelVisibilityMode="labeled"
-    app:itemIconTint="@android:color/darker_gray"
-    app:itemTextColor="@android:color/darker_gray"
+    app:itemIconTint="@color/nav_icon_color"
+    app:itemTextColor="@color/nav_icon_color"
+    app:itemBackground="@drawable/nav_item_background"
+    app:itemRippleColor="@android:color/transparent"
     app:menu="@menu/bottom_nav_menu" />

@@ -1,35 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:padding="16dp">
 
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:text="Pet Gallery"
-        android:textStyle="bold"
-        android:textSize="16sp"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content" />
-
-    <Button
-        android:text="Add Photo"
-        android:layout_gravity="end"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"/>
+        android:textColor="#4B3B47"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:columnCount="3"
-        android:layout_marginTop="8dp"
         android:rowCount="2">
 
-        <!-- Repeat this ImageView as needed for 6 slots -->
-        <ImageView
-            android:layout_width="100dp"
+        <!-- Gallery Items -->
+        <FrameLayout
+            android:layout_width="0dp"
             android:layout_height="100dp"
-            android:src="@drawable/ic_upload"
-            android:background="#fbe9e7"
-            android:layout_margin="4dp" />
+            android:layout_columnWeight="1"
+            android:layout_margin="4dp"
+            android:background="@drawable/gallery_item_background">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_upload"
+                app:tint="#fadadd" />
+        </FrameLayout>
+
+        <!-- Repeat for all 6 items -->
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="4dp"
+            android:background="@drawable/gallery_item_background">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_upload"
+                app:tint="#fadadd" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="4dp"
+            android:background="@drawable/gallery_item_background">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_upload"
+                app:tint="#fadadd" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="4dp"
+            android:background="@drawable/gallery_item_background">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_upload"
+                app:tint="#fadadd" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="4dp"
+            android:background="@drawable/gallery_item_background">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_upload"
+                app:tint="#fadadd" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="4dp"
+            android:background="@drawable/gallery_item_background">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_upload"
+                app:tint="#fadadd" />
+        </FrameLayout>
+
     </GridLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/addPhotoButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#ffb6b6"
+        android:text="Add Photo"
+        android:textColor="@android:color/white"
+        app:cornerRadius="8dp" />
+
 </LinearLayout>

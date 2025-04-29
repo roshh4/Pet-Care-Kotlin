@@ -15,6 +15,7 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:src="@drawable/ic_pet_placeholder"
+        android:tint="@color/text_pink"
         android:contentDescription="Pet icon" />
 
     <!-- Pet Name -->
@@ -25,7 +26,7 @@
         android:layout_weight="1"
         android:layout_marginStart="12dp"
         android:textSize="16sp"
-        android:textColor="#333333"
+        android:textColor="@color/black"
         tools:text="Buddy" />
 
     <!-- Arrow Icon -->
@@ -33,5 +34,6 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:src="@drawable/ic_arrow_right"
+        android:tint="@color/text_pink"
         android:contentDescription="View pet details" />
 </LinearLayout> 

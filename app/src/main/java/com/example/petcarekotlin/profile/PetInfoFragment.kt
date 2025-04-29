@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.android.material.textfield.TextInputEditText
 
 class PetInfoFragment : Fragment() {
     
@@ -23,10 +24,10 @@ class PetInfoFragment : Fragment() {
     private lateinit var petNameHeader: TextView
     private lateinit var petDetailsHeader: TextView
     
-    private lateinit var petNameEditText: EditText
-    private lateinit var speciesEditText: EditText
-    private lateinit var breedEditText: EditText
-    private lateinit var ageEditText: EditText
+    private lateinit var petNameEditText: TextInputEditText
+    private lateinit var speciesEditText: TextInputEditText
+    private lateinit var breedEditText: TextInputEditText
+    private lateinit var ageEditText: TextInputEditText
     private lateinit var weightEditText: EditText
     private lateinit var saveButton: Button
     

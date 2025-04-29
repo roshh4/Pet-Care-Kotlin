@@ -1,11 +1,12 @@
 package com.example.petcarekotlin.profile
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.example.petcarekotlin.R
+import com.google.android.material.button.MaterialButton
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -22,6 +23,8 @@ class GalleryFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    private lateinit var addPhotoButton: MaterialButton
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -36,6 +39,18 @@ class GalleryFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_gallery, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Initialize views
+        addPhotoButton = view.findViewById(R.id.addPhotoButton)
+
+        // Set click listener
+        addPhotoButton.setOnClickListener {
+            // TODO: Implement photo upload functionality
+        }
     }
 
     companion object {

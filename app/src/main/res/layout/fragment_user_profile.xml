@@ -3,20 +3,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#FFFFFF">
+    android:background="@color/white">
     
     <!-- Title bar -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        android:background="#F8F8F8">
+        android:background="@color/white">
             
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="My Profile"
-            android:textColor="#8B4513"
+            android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold"
             android:layout_centerInParent="true" />
@@ -27,6 +27,7 @@
             android:layout_height="24dp"
             android:layout_alignParentEnd="true"
             android:src="@drawable/ic_close"
+            android:tint="@color/text_pink"
             android:contentDescription="Close" />
     </RelativeLayout>
     
@@ -49,6 +50,7 @@
                 android:text="Your Pets"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                android:textColor="@color/black"
                 android:layout_marginTop="20dp" />
 
             <LinearLayout
@@ -70,6 +72,7 @@
                     android:layout_height="wrap_content"
                     android:text="No pets added yet"
                     android:textAlignment="center"
+                    android:textColor="@color/black"
                     android:padding="16dp"
                     android:visibility="gone"/>
             </LinearLayout>
@@ -81,8 +84,8 @@
                 android:layout_height="wrap_content"
                 android:text="Add Pet"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/button_primary"
-                android:textColor="#FFFFFF" />
+                android:backgroundTint="@color/login_button_pink"
+                android:textColor="@color/white" />
             
             <!-- Pet Family Section -->
             <TextView
@@ -91,7 +94,7 @@
                 android:text="Pet Family"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="#8B4513"
+                android:textColor="@color/black"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="8dp" />
                 
@@ -101,13 +104,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="8dp"
-                android:background="?attr/selectableItemBackground">
+                android:padding="12dp"
+                android:background="@color/component_background"
+                android:layout_marginBottom="8dp">
                 
                 <ImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_family"
+                    android:tint="@color/text_pink"
                     android:contentDescription="Manage Family" />
                     
                 <TextView
@@ -115,6 +120,7 @@
                     android:layout_height="wrap_content"
                     android:text="Manage Family"
                     android:textSize="16sp"
+                    android:textColor="@color/black"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="16dp" />
             </LinearLayout>
@@ -125,13 +131,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="8dp"
-                android:background="?attr/selectableItemBackground">
+                android:padding="12dp"
+                android:background="@color/component_background"
+                android:layout_marginBottom="8dp">
                 
                 <ImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_qr_code"
+                    android:tint="@color/text_pink"
                     android:contentDescription="Generate Invite" />
                     
                 <TextView
@@ -139,6 +147,7 @@
                     android:layout_height="wrap_content"
                     android:text="Generate Invite"
                     android:textSize="16sp"
+                    android:textColor="@color/black"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="16dp" />
             </LinearLayout>
@@ -149,13 +158,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="8dp"
-                android:background="?attr/selectableItemBackground">
+                android:padding="12dp"
+                android:background="@color/component_background"
+                android:layout_marginBottom="8dp">
                 
                 <ImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_exit"
+                    android:tint="@color/text_pink"
                     android:contentDescription="Leave Family" />
                     
                 <TextView
@@ -163,6 +174,7 @@
                     android:layout_height="wrap_content"
                     android:text="Leave Family"
                     android:textSize="16sp"
+                    android:textColor="@color/black"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="16dp" />
             </LinearLayout>
@@ -174,7 +186,7 @@
                 android:text="Settings"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="#8B4513"
+                android:textColor="@color/black"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="8dp" />
                 
@@ -184,13 +196,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="8dp"
-                android:background="?attr/selectableItemBackground">
+                android:padding="12dp"
+                android:background="@color/component_background">
                 
                 <ImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_theme"
+                    android:tint="@color/text_pink"
                     android:contentDescription="Theme Setting" />
                     
                 <TextView
@@ -198,6 +211,7 @@
                     android:layout_height="wrap_content"
                     android:text="Theme Setting"
                     android:textSize="16sp"
+                    android:textColor="@color/black"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="16dp" />
             </LinearLayout>
@@ -210,8 +224,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Logout"
-        android:textColor="#FFFFFF"
-        android:background="#B58863"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/login_button_pink"
         android:layout_margin="16dp"
         android:padding="12dp" />
 </LinearLayout> 

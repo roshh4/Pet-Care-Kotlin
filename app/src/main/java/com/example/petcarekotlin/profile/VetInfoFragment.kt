@@ -12,6 +12,7 @@ import com.example.petcarekotlin.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.android.material.textfield.TextInputEditText
 
 /**
  * Fragment for managing veterinarian information for a pet.
@@ -28,8 +29,8 @@ import com.google.firebase.ktx.Firebase
  */
 class VetInfoFragment : Fragment() {
     
-    private lateinit var vetNameEditText: EditText
-    private lateinit var vetContactEditText: EditText
+    private lateinit var vetNameEditText: TextInputEditText
+    private lateinit var vetContactEditText: TextInputEditText
     private lateinit var saveButton: Button
     
     private val db = Firebase.firestore
@@ -52,9 +53,9 @@ class VetInfoFragment : Fragment() {
         vetContactEditText = view.findViewById(R.id.vetContactEditText)
         saveButton = view.findViewById(R.id.saveButton)
         
-        // Clear any default text from the XML
-        vetNameEditText.setText("")
-        vetContactEditText.setText("")
+        // Set initial values
+        vetNameEditText.setText("Dr. Martinez")
+        vetContactEditText.setText("(555) 123-4567")
         
         // Get current user ID from SharedPreferences
         val sharedPrefs = requireActivity().getSharedPreferences("PetCarePrefs", 0)

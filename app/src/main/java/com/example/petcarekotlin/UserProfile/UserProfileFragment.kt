@@ -126,18 +126,35 @@ class UserProfileFragment : Fragment() {
     }
     
     private fun tryLoadPetsFromUserDocument() {
-        // Get the current user ID from shared preferences
-        val sharedPrefs = requireActivity().getSharedPreferences("PetCarePrefs", 0)
-        val storedUserId = sharedPrefs.getString("CURRENT_USER_ID", null)
+        // Check if fragment is attached to activity
+        if (!isAdded) {
+            return
+        }
+
+        // Get the current user ID from shared preferences early
+        val storedUserId = try {
+            requireActivity().getSharedPreferences("PetCarePrefs", 0)
+                .getString("CURRENT_USER_ID", null)
+        } catch (e: IllegalStateException) {
+            // Fragment not attached to activity
+            null
+        }
         
         // Use stored user ID if available, otherwise fall back to the default
         val userIdToUse = storedUserId ?: userId
         
-        Toast.makeText(context, "Fetching pets for user: $userIdToUse", Toast.LENGTH_SHORT).show()
+        context?.let { ctx ->
+            Toast.makeText(ctx, "Fetching pets for user: $userIdToUse", Toast.LENGTH_SHORT).show()
+        }
         
         db.collection("users").document(userIdToUse)
             .get()
             .addOnSuccessListener { userDoc ->
+                // Check if fragment is still attached before proceeding
+                if (!isAdded) {
+                    return@addOnSuccessListener
+                }
+
                 if (userDoc.exists()) {
                     // Get the pets list field
                     val petIds = userDoc.get("pets") as? List<*>
@@ -146,7 +163,9 @@ class UserProfileFragment : Fragment() {
                         // We have pet IDs, try to load them
                         val stringPetIds = petIds.mapNotNull { it as? String }
                         if (stringPetIds.isNotEmpty()) {
-                            Toast.makeText(context, "Found ${stringPetIds.size} pets in user document", Toast.LENGTH_SHORT).show()
+                            context?.let { ctx ->
+                                Toast.makeText(ctx, "Found ${stringPetIds.size} pets in user document", Toast.LENGTH_SHORT).show()
+                            }
                             // Load pets data from the pet documents
                             loadPetsData(stringPetIds)
                         } else {
@@ -157,12 +176,21 @@ class UserProfileFragment : Fragment() {
                         loadPetsFromUserField(userDoc)
                     }
                 } else {
-                    Toast.makeText(context, "User document not found: $userIdToUse", Toast.LENGTH_SHORT).show()
+                    context?.let { ctx ->
+                        Toast.makeText(ctx, "User document not found: $userIdToUse", Toast.LENGTH_SHORT).show()
+                    }
                     showEmptyState()
                 }
             }
             .addOnFailureListener { e ->
-                Toast.makeText(context, "Error loading user: ${e.message}", Toast.LENGTH_SHORT).show()
+                // Check if fragment is still attached before showing toast
+                if (!isAdded) {
+                    return@addOnFailureListener
+                }
+                
+                context?.let { ctx ->
+                    Toast.makeText(ctx, "Error loading user: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
                 showEmptyState()
             }
     }

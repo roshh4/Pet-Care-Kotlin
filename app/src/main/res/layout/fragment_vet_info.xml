@@ -1,51 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="16dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#FFFAFAFA">
+    android:orientation="vertical"
+    android:padding="16dp">
 
-    <!-- Veterinarian Name Section -->
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Veterinarian"
-        android:textColor="#333333"
-        android:textSize="16sp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="4dp"/>
+        android:layout_marginBottom="16dp"
+        android:text="Veterinarian Information"
+        android:textColor="#4B3B47"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
-    <EditText
-        android:id="@+id/vetNameEditText"
+    <!-- Veterinarian Name -->
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter veterinarian name"
-        android:text="Dr. Martinez"
-        android:background="@drawable/edit_text_background"
-        android:inputType="textPersonName"
-        android:padding="12dp"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16dp"
+        android:hint="Veterinarian"
+        android:textColorHint="#4B3B47"
+        app:boxStrokeColor="#fadadd"
+        app:hintTextColor="#4B3B47">
 
-    <!-- Vet Contact Section -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Vet Contact"
-        android:textColor="#333333"
-        android:textSize="16sp"
-        android:layout_marginBottom="4dp"/>
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/vetNameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#000000" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
-        android:id="@+id/vetContactEditText"
+    <!-- Vet Contact -->
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter phone number"
-        android:text="(555) 123-4567"
-        android:background="@drawable/edit_text_background"
-        android:inputType="phone"
-        android:padding="12dp"
-        android:layout_marginBottom="24dp"/>
+        android:hint="Vet Contact"
+        android:textColorHint="#4B3B47"
+        app:boxStrokeColor="#fadadd"
+        app:hintTextColor="#4B3B47">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/vetContactEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="phone"
+            android:textColor="#000000" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Save Button -->
     <Button
@@ -54,7 +56,7 @@
         android:layout_height="wrap_content"
         android:text="Save Changes"
         android:layout_marginTop="16dp"
-        android:background="@drawable/button_primary"
+        android:backgroundTint="@color/login_button_pink"
         android:textColor="#FFFFFF"
         android:padding="12dp"/>
 </LinearLayout>
