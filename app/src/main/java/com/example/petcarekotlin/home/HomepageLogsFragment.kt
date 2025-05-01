@@ -263,71 +263,131 @@ class HomepageLogsFragment : Fragment() {
     }
     
     private fun fetchLastFeeding(petId: String, petIndex: Int) {
-        db.collection("feedingLogs")
-            .whereEqualTo("petId", petId)
-            .orderBy("timestamp", com.google.firebase.firestore.Query.Direction.DESCENDING)
-            .limit(1)
+        // First get the pet document to access the foodLogs array
+        db.collection("pets")
+            .document(petId)
             .get()
-            .addOnSuccessListener { documents ->
-                if (!documents.isEmpty) {
-                    val doc = documents.documents[0]
-                    val timestamp = doc.getTimestamp("timestamp")
-                    val userId = doc.getString("userId") ?: ""
-                    
-                    if (timestamp != null) {
-                        // Format the timestamp
-                        val date = timestamp.toDate()
-                        val currentTime = Date()
-                        val diffInMillis = currentTime.time - date.time
-                        val diffInHours = TimeUnit.MILLISECONDS.toHours(diffInMillis)
+            .addOnSuccessListener { petDoc ->
+                val foodLogs = petDoc.get("foodLogs") as? List<String>
+                
+                if (foodLogs.isNullOrEmpty()) {
+                    // No feeding logs found
+                    if (petIndex < petList.size) {
+                        val updatedPet = petList[petIndex].copy(
+                            lastFedTime = "Not fed yet",
+                            fedBy = ""
+                        )
+                        petList[petIndex] = updatedPet
                         
-                        val timeString = when {
-                            diffInHours < 24 -> {
-                                val format = SimpleDateFormat("h:mm a", Locale.getDefault())
-                                "Today, ${format.format(date)}"
-                            }
-                            diffInHours < 48 -> {
-                                val format = SimpleDateFormat("h:mm a", Locale.getDefault())
-                                "Yesterday, ${format.format(date)}"
-                            }
-                            else -> {
-                                val format = SimpleDateFormat("MMM d, h:mm a", Locale.getDefault())
-                                format.format(date)
-                            }
-                        }
-                        
-                        // Update the pet info
-                        if (petIndex < petList.size) {
-                            val updatedPet = petList[petIndex].copy(
-                                lastFedTime = timeString
-                            )
-                            
-                            // Get the user who fed the pet
-                            db.collection("users")
-                                .document(userId)
-                                .get()
-                                .addOnSuccessListener { userDoc ->
-                                    val username = userDoc.getString("username") ?: "Unknown"
-                                    
-                                    // Final update with username
-                                    val finalPet = updatedPet.copy(
-                                        fedBy = "by $username"
-                                    )
-                                    
-                                    petList[petIndex] = finalPet
-                                    
-                                    // If this is the current displayed pet, update UI
-                                    if (petIndex == currentIndex) {
-                                        view?.let { updateUI(it) }
-                                    }
-                                }
+                        // If this is the current displayed pet, update UI
+                        if (petIndex == currentIndex) {
+                            view?.let { updateUI(it) }
                         }
                     }
+                    return@addOnSuccessListener
                 }
+                
+                // Get the last food log ID
+                val lastFoodLogId = foodLogs.last()
+                
+                // Fetch the specific food log
+                db.collection("foodLogs")
+                    .document(lastFoodLogId)
+                    .get()
+                    .addOnSuccessListener { doc ->
+                        if (!doc.exists()) {
+                            // Log doesn't exist anymore
+                            handleNoFeedingLog(petIndex)
+                            return@addOnSuccessListener
+                        }
+                        
+                        val timestamp = doc.getTimestamp("createdAt")
+                        val userId = doc.getString("userFullName") ?: ""
+                        
+                        if (timestamp != null) {
+                            // Format the timestamp
+                            val date = timestamp.toDate()
+                            val currentTime = Date()
+                            val diffInMillis = currentTime.time - date.time
+                            val diffInHours = TimeUnit.MILLISECONDS.toHours(diffInMillis)
+                            
+                            val timeString = when {
+                                diffInHours < 24 -> {
+                                    val format = SimpleDateFormat("HH:mm", Locale.getDefault())
+                                    "Today, ${format.format(date)}"
+                                }
+                                diffInHours < 48 -> {
+                                    val format = SimpleDateFormat("HH:mm", Locale.getDefault())
+                                    "Yesterday, ${format.format(date)}"
+                                }
+                                else -> {
+                                    val format = SimpleDateFormat("MMM d, HH:mm", Locale.getDefault())
+                                    format.format(date)
+                                }
+                            }
+                            
+                            // Update the pet info
+                            if (petIndex < petList.size) {
+                                val updatedPet = petList[petIndex].copy(
+                                    lastFedTime = timeString
+                                )
+                                
+                                // Get the user who fed the pet
+                                db.collection("foodLogs")
+                                    .document(lastFoodLogId)
+                                    .get()
+                                    .addOnSuccessListener { userDoc ->
+                                        val fullName = userDoc.getString("userFullName") ?: userDoc.getString("userName") ?: "Unknown"
+                                        
+                                        // Final update with username
+                                        val finalPet = updatedPet.copy(
+                                            fedBy = "by $fullName"
+                                        )
+                                        
+                                        petList[petIndex] = finalPet
+                                        
+                                        // If this is the current displayed pet, update UI
+                                        if (petIndex == currentIndex) {
+                                            view?.let { updateUI(it) }
+                                        }
+                                    }
+                                    .addOnFailureListener { exception ->
+                                        Log.e(TAG, "Error getting user details", exception)
+                                        // Still update the pet info even if we can't get the user details
+                                        val finalPet = updatedPet.copy(
+                                            fedBy = "by Unknown"
+                                        )
+                                        petList[petIndex] = finalPet
+                                        if (petIndex == currentIndex) {
+                                            view?.let { updateUI(it) }
+                                        }
+                                    }
+                            }
+                        }
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.e(TAG, "Error getting feeding log", exception)
+                        handleNoFeedingLog(petIndex)
+                    }
             }
             .addOnFailureListener { exception ->
-                Log.e(TAG, "Error getting feeding logs", exception)
+                Log.e(TAG, "Error getting pet document", exception)
+                handleNoFeedingLog(petIndex)
             }
+    }
+    
+    private fun handleNoFeedingLog(petIndex: Int) {
+        // Helper function to handle the "Not fed yet" case
+        if (petIndex < petList.size) {
+            val updatedPet = petList[petIndex].copy(
+                lastFedTime = "Not fed yet",
+                fedBy = ""
+            )
+            petList[petIndex] = updatedPet
+            if (petIndex == currentIndex) {
+                view?.let { updateUI(it) }
+            }
+        }
     }
     
     private fun updateUIForNoPets() {
