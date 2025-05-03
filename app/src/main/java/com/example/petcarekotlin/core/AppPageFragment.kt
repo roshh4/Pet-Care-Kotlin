@@ -315,4 +315,21 @@ class AppPageFragment : Fragment(), FooterFragment.OnFooterNavigationListener {
             .replace(R.id.fragment_container, fragment, "petinfo")
             .commit()
     }
+
+    fun switchToHome() {
+        // Update current fragment ID
+        currentFragmentId = R.id.nav_home
+        currentFragmentTag = "home"
+        
+        // Update header
+        headerFragment.setTitle("Home")
+        headerFragment.showBackButton(false)
+        
+        // Load the HomePageFragment
+        val fragment = HomePageFragment()
+        loadFragmentInternal(fragment, "home")
+        
+        // Update footer selection
+        footerFragment.setSelectedItem(R.id.nav_home)
+    }
 } 

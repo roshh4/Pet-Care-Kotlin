@@ -21,6 +21,7 @@ import com.example.petcarekotlin.pets.PetsListAdapter
 import com.example.petcarekotlin.profile.PetInfoFragment
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import android.content.Context
 
 class UserProfileFragment : Fragment() {
     
@@ -67,17 +68,31 @@ class UserProfileFragment : Fragment() {
     }
     
     private fun navigateToPetDetail(pet: PetModel) {
-        // Navigate to pet detail and close the drawer
+        // Update current pet ID in SharedPreferences
+        requireActivity().getSharedPreferences("PetCarePrefs", Context.MODE_PRIVATE)
+            .edit()
+            .putString("CURRENT_PET_ID", pet.petId)
+            .apply()
+        
+        // Close the drawer
         closeDrawer()
         
-        // Create and show the PetDetailsFragment with the selected pet ID
-        val fragment = com.example.petcarekotlin.pets.PetDetailsFragment.newInstance(pet.petId)
-        
-        // Use the parent activity's fragment manager to replace the main container
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, fragment)
-            .addToBackStack(null)
-            .commit()
+        // Find the HomepageLogsFragment and refresh it
+        val appPageFragment = parentFragment as? AppPageFragment
+        appPageFragment?.let { appPage ->
+            // First, switch to the home tab to ensure the fragment is active
+            appPage.switchToHome()
+            
+            // Then try to find and refresh the HomepageLogsFragment
+            val homepageLogsFragment = appPage.childFragmentManager
+                .findFragmentByTag("home")?.childFragmentManager
+                ?.findFragmentById(R.id.logs_container) as? HomepageLogsFragment
+                
+            homepageLogsFragment?.let { fragment ->
+                // Force a refresh with the new pet ID
+                fragment.refreshData()
+            }
+        }
     }
     
     private fun loadUserPets() {
@@ -143,10 +158,6 @@ class UserProfileFragment : Fragment() {
         // Use stored user ID if available, otherwise fall back to the default
         val userIdToUse = storedUserId ?: userId
         
-        context?.let { ctx ->
-            Toast.makeText(ctx, "Fetching pets for user: $userIdToUse", Toast.LENGTH_SHORT).show()
-        }
-        
         db.collection("users").document(userIdToUse)
             .get()
             .addOnSuccessListener { userDoc ->
@@ -163,9 +174,6 @@ class UserProfileFragment : Fragment() {
                         // We have pet IDs, try to load them
                         val stringPetIds = petIds.mapNotNull { it as? String }
                         if (stringPetIds.isNotEmpty()) {
-                            context?.let { ctx ->
-                                Toast.makeText(ctx, "Found ${stringPetIds.size} pets in user document", Toast.LENGTH_SHORT).show()
-                            }
                             // Load pets data from the pet documents
                             loadPetsData(stringPetIds)
                         } else {
@@ -176,9 +184,6 @@ class UserProfileFragment : Fragment() {
                         loadPetsFromUserField(userDoc)
                     }
                 } else {
-                    context?.let { ctx ->
-                        Toast.makeText(ctx, "User document not found: $userIdToUse", Toast.LENGTH_SHORT).show()
-                    }
                     showEmptyState()
                 }
             }
@@ -189,7 +194,7 @@ class UserProfileFragment : Fragment() {
                 }
                 
                 context?.let { ctx ->
-                    Toast.makeText(ctx, "Error loading user: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(ctx, "Error loading user data: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
                 showEmptyState()
             }
@@ -200,9 +205,6 @@ class UserProfileFragment : Fragment() {
             showEmptyState()
             return
         }
-        
-        // Debug log
-        Toast.makeText(context, "Trying to load pets: ${petIds.joinToString()}", Toast.LENGTH_SHORT).show()
         
         val petsList = mutableListOf<PetModel>()
         var completedQueries = 0
@@ -261,8 +263,6 @@ class UserProfileFragment : Fragment() {
                     }
                 }
                 .addOnFailureListener { e ->
-                    Toast.makeText(context, "Error loading pet: $petId - ${e.message}", Toast.LENGTH_SHORT).show()
-                    
                     // Create a placeholder pet
                     val pet = PetModel(
                         petId = petId,
@@ -403,7 +403,7 @@ class UserProfileFragment : Fragment() {
                 ?.findFragmentById(R.id.logs_container) as? HomepageLogsFragment
                 
             homepageLogsFragment?.showAddPetDialog() ?: run {
-                Toast.makeText(context, "Could not access pet management. Please try again.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Could not access pet management", Toast.LENGTH_SHORT).show()
             }
         }
     }
