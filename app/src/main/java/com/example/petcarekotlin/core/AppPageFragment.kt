@@ -307,7 +307,7 @@ class AppPageFragment : Fragment(), FooterFragment.OnFooterNavigationListener {
         headerFragment.showBackButton(true)
         
         // Create and load the fragment
-        val fragment = com.example.petcarekotlin.profile.PetInfoFragment.newInstance()
+        val fragment = com.example.petcarekotlin.profile.PetInfoFragment()
         currentFragmentTag = "petinfo"
         
         // Load the fragment

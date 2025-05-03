@@ -1,5 +1,6 @@
 package com.example.petcarekotlin.pets
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -251,8 +252,12 @@ class UserPetsFragment : Fragment() {
     }
     
     private fun navigateToPetDetail(pet: PetModel) {
-        // Navigate to PetInfoFragment with the selected pet ID
-        val fragment = PetInfoFragment.newInstance(pet.petId)
+        // Save the selected pet ID to SharedPreferences
+        val sharedPrefs = requireActivity().getSharedPreferences("PetCarePrefs", Context.MODE_PRIVATE)
+        sharedPrefs.edit().putString("CURRENT_PET_ID", pet.petId).apply()
+        
+        // Navigate to PetInfoFragment
+        val fragment = PetInfoFragment()
         
         parentFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)
