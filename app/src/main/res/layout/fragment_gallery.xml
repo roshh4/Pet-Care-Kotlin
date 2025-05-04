@@ -15,105 +15,11 @@
         android:textSize="18sp"
         android:textStyle="bold" />
 
-    <GridLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/galleryRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:columnCount="3"
-        android:rowCount="2">
-
-        <!-- Gallery Items -->
-        <FrameLayout
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_columnWeight="1"
-            android:layout_margin="4dp"
-            android:background="@drawable/gallery_item_background">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_upload"
-                app:tint="#fadadd" />
-        </FrameLayout>
-
-        <!-- Repeat for all 6 items -->
-        <FrameLayout
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_columnWeight="1"
-            android:layout_margin="4dp"
-            android:background="@drawable/gallery_item_background">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_upload"
-                app:tint="#fadadd" />
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_columnWeight="1"
-            android:layout_margin="4dp"
-            android:background="@drawable/gallery_item_background">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_upload"
-                app:tint="#fadadd" />
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_columnWeight="1"
-            android:layout_margin="4dp"
-            android:background="@drawable/gallery_item_background">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_upload"
-                app:tint="#fadadd" />
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_columnWeight="1"
-            android:layout_margin="4dp"
-            android:background="@drawable/gallery_item_background">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_upload"
-                app:tint="#fadadd" />
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_columnWeight="1"
-            android:layout_margin="4dp"
-            android:background="@drawable/gallery_item_background">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_upload"
-                app:tint="#fadadd" />
-        </FrameLayout>
-
-    </GridLayout>
+        android:layout_marginBottom="16dp" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/addPhotoButton"
