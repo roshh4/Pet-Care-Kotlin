@@ -28,7 +28,8 @@ I created this app because I needed a simple, shared way for my family to manage
 
 ## App Screenshots
 
-![image](https://github.com/user-attachments/assets/b548149e-5187-4c40-8489-5a6788d5d27b)
+![image](https://github.com/user-attachments/assets/424ae759-2cb7-4a1b-96f8-affc7f895b03)
+
 
 ---
 
