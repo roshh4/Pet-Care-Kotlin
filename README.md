@@ -1,43 +1,44 @@
 # 🐾 Pet Care Reminder App
 
-I created this app because I needed a simple, shared way for my family to manage our cat, Dorito's, care. It makes it super easy for everyone at home to see who fed him, when, and what, so we can prevent both overfeeding and those "oops, did anyone feed Dorito?" moments. On top of that, this app also includes setting reminders for all the crucial pet stuff – like meal times, when to buy more food or litter, and staying on top of vet appointments. Consider it your family's central hub for simple, coordinated pet care!
+I created this app because I needed a simple, shared way for my family to manage our cat, Dorito's care. It makes it super easy for everyone at home to see who fed him, when, and what, so we can prevent both overfeeding and those "oops, did anyone feed Dorito?" moments. On top of that, this app also includes setting reminders for all the crucial pet stuff – like meal times, when to buy more food or litter, and staying on top of vet appointments. Consider it your family's central hub for simple, coordinated pet care!
 
 
 ---
 
-## 📱 Features
+## Features
 
-- 👥 **Multi-User Support**  
+- **Multi-User Support**  
   Multiple family members can log in and share pet care duties.
 
-- 🍽️ **Feeding Tracker**  
+- **Feeding Tracker**  
   Record when and who fed the pet.
 
-- 🩺 **Vet Appointment Scheduler**  
+- **Vet Appointment Scheduler**  
   Add reminders for vaccinations and vet visits.
 
-- 💩 **Litter Box & Hygiene Tracker**  
-  Regular reminders for cleaning tasks.
-
-- 🛒 **Food Stock Alerts**  
+- **Food Stock Alerts**  
   Never forget to buy pet food again!
 
-- 📸 **Photo Capture**  
-  Snap vet prescriptions, bills, or pet pics!
+- **Photo Capture**  
+  inclusive of a gallery where u can capture and store your pet's photos
 
-- ⏰ **Smart Notifications**  
-  AlarmManager and NotificationManager based alerts.
+
 
 ---
 
-## 🧩 Architecture
+## App Screenshots
+
+
+
+---
+
+## Architecture
 
 - **Language:** Kotlin  
 - **UI:** XML Layouts  
 - **App Structure:** Fragment-based UI  
 - **Database:** Firebase Firestore  
-- **Authentication:** Firebase Auth (Email/Password)  
-- **Notifications:** Local Alarms + System Notifications
+- **Authentication:** Firebase Auth (Email/Password)
 
 ---
 
@@ -82,14 +83,6 @@ The project includes both unit tests and instrumentation tests:
 3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details
-
-## Contact
-
-For any queries or support, please open an issue in the repository. 
 
 
 ## 🙌 Acknowledgements
