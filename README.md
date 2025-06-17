@@ -1,6 +1,7 @@
 # 🐾 Pet Care Reminder App
 
-A feature-rich Android application built using Kotlin and XML layouts, designed to help families collaboratively manage every aspect of their pet’s care — from feeding routines to medical appointments.
+I created this app because I needed a simple, shared way for my family to manage our cat, Dorito's, care. It makes it super easy for everyone at home to see who fed him, when, and what, so we can prevent both overfeeding and those "oops, did anyone feed Dorito?" moments. On top of that, this app also includes setting reminders for all the crucial pet stuff – like meal times, when to buy more food or litter, and staying on top of vet appointments. Consider it your family's central hub for simple, coordinated pet care!
+
 
 ---
 
