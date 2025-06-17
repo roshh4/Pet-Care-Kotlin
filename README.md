@@ -29,12 +29,12 @@ I created this app because I needed a simple, shared way for my family to manage
 ## App Screenshots
 
 ![Screenshot_20250617_050907 (1)](https://github.com/user-attachments/assets/a9ac8017-fc22-49fb-8a13-e8114efdd6a2)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                      ![Screenshot_20250617_050229 (2)](https://github.com/user-attachments/assets/d19a68bd-9953-424e-a920-2a977a0e065b)
+![Screenshot_20250617_050229 (2)](https://github.com/user-attachments/assets/d19a68bd-9953-424e-a920-2a977a0e065b)
 
-![Screenshot_20250617_051431](https://github.com/user-attachments/assets/f91a725e-26fa-44cf-839d-8fade6123596)
+![Screenshot_20250617_051431](https://github.com/user-attachments/assets/f91a725e-26fa-44cf-839d-8fade6123596)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ![Screenshot_20250617_051530](https://github.com/user-attachments/assets/739a9f70-c7f2-4a04-aa63-b6e9788e442a)
 
-![Screenshot_20250617_051705](https://github.com/user-attachments/assets/9e7054a1-1d8a-490d-a22b-3c47107f6b3c)
+![Screenshot_20250617_051705](https://github.com/user-attachments/assets/9e7054a1-1d8a-490d-a22b-3c47107f6b3c)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ![Screenshot_20250617_051943](https://github.com/user-attachments/assets/84f7e43e-119e-4d86-8c6c-01d7ec579402)
 
 ![Screenshot_20250617_052100](https://github.com/user-attachments/assets/fac04d0b-e8ca-4137-a036-ad4f3d34738e)
